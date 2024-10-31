@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -24,10 +23,10 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TabRegister() {
     var name by remember { mutableStateOf("") }
-    var rollNo by remember { mutableStateOf("") }
+    var regNo by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
-    var semester by remember { mutableStateOf("") }
+    var sem by remember { mutableStateOf("") }
 
     Column(
         modifier = Modifier
@@ -35,12 +34,6 @@ fun TabRegister() {
             .padding(16.dp),
         verticalArrangement = Arrangement.Center
     ) {
-        Text(
-            text = "Student Information Form",
-            style = MaterialTheme.typography.titleLarge,
-            modifier = Modifier.padding(bottom = 16.dp)
-        )
-
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -50,8 +43,8 @@ fun TabRegister() {
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = rollNo,
-            onValueChange = { rollNo = it },
+            value = regNo,
+            onValueChange = { regNo = it },
             label = { Text("College Registration No") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
@@ -77,8 +70,8 @@ fun TabRegister() {
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = semester,
-            onValueChange = { semester = it },
+            value = sem,
+            onValueChange = { sem = it },
             label = { Text("Current Semester") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
             modifier = Modifier.fillMaxWidth()
