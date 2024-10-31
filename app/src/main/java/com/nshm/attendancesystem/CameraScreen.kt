@@ -7,7 +7,9 @@ import androidx.camera.core.*
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.Text
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -17,6 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
@@ -24,12 +27,38 @@ import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 
 @Composable
-fun CameraScreen() {
+fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
+
+    val message by attendanceViewModel::message
+    val name by attendanceViewModel::name
+    val clgId by attendanceViewModel::clgId
+
     Box(modifier = Modifier.fillMaxSize()) {
 
         CameraPreview()
 
         Box(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(60.dp)
+                    .padding(vertical = 6.dp, horizontal = 10.dp),
+                horizontalAlignment = Alignment.Start
+            ) {
+                Text(text = "Name : $name",
+                    color = Color.White,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(text = "College Id : $clgId",
+                    color = Color.White,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(text = "Status : $message",
+                    color = Color.White,
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
             Canvas(modifier = Modifier.fillMaxSize()) {
                 drawRect(
                     color = Color.Black.copy(alpha = 0.6f),
@@ -139,15 +168,22 @@ private fun processImageProxy(
 }
 
 @Composable
-fun CameraPreview(){
+fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()){
     val lifecycleOwner = LocalLifecycleOwner.current
     val context = LocalContext.current
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val scanner = BarcodeScanning.getClient()
     val executor = remember { Executors.newSingleThreadExecutor() }
-    var scannedText by remember { mutableStateOf("Scan a barcode") }
+    var scannedText by remember { mutableStateOf("Scan") }
 
-    Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+    if (scannedText.matches(Regex("\\d+"))) {
+        if (scannedText.length == 11) {
+            Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+            attendanceViewModel.fetchScan(scannedText)
+        } else {
+            Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
+        }
+    }
 
     AndroidView(
         modifier = Modifier.fillMaxSize(),

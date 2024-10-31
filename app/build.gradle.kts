@@ -41,13 +41,20 @@ android {
 
 dependencies {
 
-    implementation ("androidx.compose.runtime:runtime-livedata:1.7.5") // Check for the latest version
+    // Network Calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
+    // JSON to Kotlin Object Mapping
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    //LiveData
+    implementation ("androidx.compose.runtime:runtime-livedata:1.7.5")
 
     // CameraX dependencies
     implementation ("androidx.camera:camera-core:1.4.0")
     implementation ("androidx.camera:camera-camera2:1.4.0")
     implementation ("androidx.camera:camera-lifecycle:1.4.0")
-    implementation ("androidx.camera:camera-view:1.4.0") // For preview use
+    implementation ("androidx.camera:camera-view:1.4.0")
     implementation ("androidx.camera:camera-extensions:1.4.0")
 
     // ML Kit Barcode Scanning
