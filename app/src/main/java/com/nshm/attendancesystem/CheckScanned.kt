@@ -10,7 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun Tab3() {
+fun Scanned() {
     Box(
         modifier = Modifier
             .fillMaxSize()

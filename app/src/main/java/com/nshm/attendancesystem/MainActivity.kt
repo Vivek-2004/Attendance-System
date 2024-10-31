@@ -35,7 +35,7 @@ fun MyApp() {
         ) {
             composable("Scan") { CameraScreen() }
             composable("Register") { TabRegister() }
-            composable("Tab3") { Tab3() }
+            composable("Scanned") { Scanned() }
         }
     }
 }
