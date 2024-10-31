@@ -6,7 +6,7 @@ plugins {
 
 android {
     namespace = "com.nshm.attendancesystem"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.nshm.attendancesystem"

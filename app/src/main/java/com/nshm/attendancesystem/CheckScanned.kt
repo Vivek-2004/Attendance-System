@@ -17,6 +17,6 @@ fun Scanned() {
             .padding(16.dp),
         contentAlignment = Alignment.Center
     ) {
-        Text("Tab 3 Content")
+        Text("Scanned Results")
     }
 }
