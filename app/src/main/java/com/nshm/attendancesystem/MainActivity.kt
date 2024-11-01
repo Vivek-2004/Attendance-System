@@ -50,7 +50,7 @@ fun MyApp() {
                 title.value = "Register"
                 TabRegister()
             }
-            composable("Scanned") {
+            composable("Attendance") {
                 title.value = ""
                 title.value = "Scanned Ids"
                 Scanned()

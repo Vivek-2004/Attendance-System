@@ -2,7 +2,11 @@ package com.nshm.attendancesystem
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -20,14 +24,22 @@ import androidx.compose.ui.unit.sp
 
 @Composable
 fun BottomNavigationBar(navController: NavController, onTitleChange: (String) -> Unit) {
-    val items = listOf("Scan", "Register", "Scanned")
+    val items = listOf("Scan", "Register", "Attendance")
+
     NavigationBar(modifier = Modifier.height(65.dp)) {
         val currentDestination = navController.currentBackStackEntryAsState().value?.destination
         items.forEach { screen ->
+            val icon = when (screen) {
+                "Scan" -> Icons.Default.Search // Replace with a relevant icon for "Scan"
+                "Register" -> Icons.Default.Create // Replace with a relevant icon for "Register"
+                "Attendance" -> Icons.Default.Person // Replace with a relevant icon for "Attendance"
+                else -> Icons.Default.Home // Fallback icon
+            }
+
             NavigationBarItem(
-                icon = { Icon(imageVector =  Icons.Default.Home, contentDescription = screen) },
+                icon = { Icon(imageVector = icon, contentDescription = screen) },
                 label = { Text(screen) },
-                selected = false,
+                selected = currentDestination?.route == screen,
                 onClick = {
                     navController.navigate(screen) {
                         popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -40,6 +52,7 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
         }
     }
 }
+
 
 @Composable
 fun TopAppBar(title: String) {
