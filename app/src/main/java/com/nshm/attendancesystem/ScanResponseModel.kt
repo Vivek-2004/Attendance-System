@@ -16,3 +16,7 @@ data class User(
     val isPresent: Boolean,
     val __v: Int
 )
+
+data class UserList(
+    val StudentsList:List<User>
+)

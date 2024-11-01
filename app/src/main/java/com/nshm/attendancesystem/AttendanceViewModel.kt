@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
 
 class AttendanceViewModel:ViewModel() {
+
     private val _attendanceService = attendanceService
 
     var message by mutableStateOf("")
@@ -28,6 +29,21 @@ class AttendanceViewModel:ViewModel() {
             }
         }
     }
+    data class StudentsLoadingState(
+        val error:String,
+        val loading: Boolean,
+        val  allPresentStudents:UserList
+    )
+    fun fetchStudentsList(){
+        viewModelScope.launch {
+            try {
+                val registeredStudentsList = _attendanceService.getRegisteredStudents()
+            } catch (e:Exception){
+                message = "Some error"
+            }
+        }
+    }
+
 
     private fun formatData(attendanceData: ScanResponse){
         message = if(attendanceData.message == "true"){ "Present" } else { attendanceData.message }
