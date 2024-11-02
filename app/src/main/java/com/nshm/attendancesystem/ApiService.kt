@@ -18,7 +18,7 @@ interface ApiService {
     suspend fun getScanBar(
         @Path("id") id: String
     ): ScanResponse
-    @GET("users")
-    suspend fun getRegisteredStudents():UserList
-}
 
+    @GET("users")
+    suspend fun getRegisteredStudents(): List<User>
+}

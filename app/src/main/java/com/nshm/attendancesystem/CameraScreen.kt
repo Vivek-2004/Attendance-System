@@ -1,6 +1,5 @@
 package com.nshm.attendancesystem
 
-import AttendanceViewModel
 import android.util.Size
 import android.widget.Toast
 import androidx.annotation.OptIn
@@ -26,11 +25,18 @@ import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
+import android.Manifest
+import android.content.pm.PackageManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.camera.view.PreviewView
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
 
-    val message by attendanceViewModel::message
+    val message by attendanceViewModel::messageScan
     val name by attendanceViewModel::name
     val clgId by attendanceViewModel::clgId
 
@@ -42,8 +48,8 @@ fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(vertical = 6.dp, horizontal = 10.dp),
+                    .height(72.dp)
+                    .padding(vertical = 4.dp, horizontal = 12.dp),
                 horizontalAlignment = Alignment.Start
             ) {
                 Text(text = "Name : $name",
@@ -55,6 +61,8 @@ fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     modifier = Modifier.weight(1f)
                 )
                 Text(text = "Status : $message",
+                    fontWeight = FontWeight.Bold,
+                    fontStyle = FontStyle.Italic,
                     color = Color.White,
                     modifier = Modifier.weight(1f)
                 )
@@ -137,6 +145,84 @@ fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     }
 }
 
+@Composable
+fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
+    val lifecycleOwner = LocalLifecycleOwner.current
+    val context = LocalContext.current
+    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
+    val scanner = BarcodeScanning.getClient()
+    val executor = remember { Executors.newSingleThreadExecutor() }
+    var scannedText by remember { mutableStateOf("Scan") }
+    var hasCameraPermission by remember {
+        mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
+    }
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        hasCameraPermission = isGranted
+    }
+
+    LaunchedEffect(Unit) {
+        if (!hasCameraPermission) {
+            permissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+    }
+
+    if (hasCameraPermission) {
+        if (scannedText.matches(Regex("\\d+"))) {
+            if (scannedText.length == 11) {
+                Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+                attendanceViewModel.fetchScan(scannedText)
+            } else {
+                Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        AndroidView(
+            modifier = Modifier.fillMaxSize(),
+            factory = { context ->
+                val previewView = PreviewView(context)
+                val preview = Preview.Builder()
+                    .setTargetResolution(Size(1280, 720))
+                    .build()
+
+                cameraProviderFuture.addListener({
+                    val cameraProvider = cameraProviderFuture.get()
+                    val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+
+                    val imageAnalyzer = ImageAnalysis.Builder()
+                        .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
+                        .build()
+                        .also {
+                            it.setAnalyzer(executor) { imageProxy ->
+                                processImageProxy(scanner, imageProxy) { barcode ->
+                                    scannedText = barcode
+                                }
+                            }
+                        }
+
+                    try {
+                        cameraProvider.unbindAll()
+                        val camera = cameraProvider.bindToLifecycle(
+                            lifecycleOwner,
+                            cameraSelector,
+                            preview,
+                            imageAnalyzer
+                        )
+                        preview.setSurfaceProvider(previewView.surfaceProvider)
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }, ContextCompat.getMainExecutor(context))
+                previewView
+            }
+        )
+    } else {
+        Toast.makeText(context, "Camera permission is required to use this feature.", Toast.LENGTH_SHORT).show()
+    }
+}
+
 @OptIn(ExperimentalGetImage::class)
 private fun processImageProxy(
     scanner: BarcodeScanner,
@@ -166,63 +252,4 @@ private fun processImageProxy(
     } else {
         imageProxy.close()
     }
-}
-
-@Composable
-fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()){
-    val lifecycleOwner = LocalLifecycleOwner.current
-    val context = LocalContext.current
-    val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
-    val scanner = BarcodeScanning.getClient()
-    val executor = remember { Executors.newSingleThreadExecutor() }
-    var scannedText by remember { mutableStateOf("Scan") }
-
-    if (scannedText.matches(Regex("\\d+"))) {
-        if (scannedText.length == 11) {
-            Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
-            attendanceViewModel.fetchScan(scannedText)
-        } else {
-            Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
-        }
-    }
-
-    AndroidView(
-        modifier = Modifier.fillMaxSize(),
-        factory = { context ->
-            val previewView = androidx.camera.view.PreviewView(context)
-            val preview = Preview.Builder()
-                .setTargetResolution(Size(1280, 720))
-                .build()
-
-            cameraProviderFuture.addListener({
-                val cameraProvider = cameraProviderFuture.get()
-                val cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
-
-                val imageAnalyzer = ImageAnalysis.Builder()
-                    .setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST)
-                    .build()
-                    .also {
-                        it.setAnalyzer(executor) { imageProxy ->
-                            processImageProxy(scanner, imageProxy) { barcode ->
-                                scannedText = barcode
-                            }
-                        }
-                    }
-
-                try {
-                    cameraProvider.unbindAll()
-                    val camera = cameraProvider.bindToLifecycle(
-                        lifecycleOwner,
-                        cameraSelector,
-                        preview,
-                        imageAnalyzer
-                    )
-                    preview.setSurfaceProvider(previewView.surfaceProvider)
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                }
-            }, ContextCompat.getMainExecutor(context))
-            previewView
-        }
-    )
 }

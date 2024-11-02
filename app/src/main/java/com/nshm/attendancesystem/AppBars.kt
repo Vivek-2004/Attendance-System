@@ -2,7 +2,6 @@ package com.nshm.attendancesystem
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
@@ -30,10 +29,10 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
         val currentDestination = navController.currentBackStackEntryAsState().value?.destination
         items.forEach { screen ->
             val icon = when (screen) {
-                "Scan" -> Icons.Default.Search // Replace with a relevant icon for "Scan"
-                "Register" -> Icons.Default.Create // Replace with a relevant icon for "Register"
-                "Attendance" -> Icons.Default.Person // Replace with a relevant icon for "Attendance"
-                else -> Icons.Default.Home // Fallback icon
+                "Scan" -> Icons.Default.Search
+                "Register" -> Icons.Default.Create
+                "Attendance" -> Icons.Default.Person
+                else -> Icons.Default.Home
             }
 
             NavigationBarItem(
