@@ -40,6 +40,13 @@ android {
 }
 
 dependencies {
+    implementation("com.google.accompanist:accompanist-swiperefresh:0.26.2-beta")
+
+    implementation("androidx.compose.ui:ui:<latest-version>")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:<latest-version>")
+
+
 
     // Network Calls
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
