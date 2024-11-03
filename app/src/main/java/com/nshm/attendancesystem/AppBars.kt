@@ -22,7 +22,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.unit.sp
 
-
 @Composable
 fun BottomNavigationBar(navController: NavController, onTitleChange: (String) -> Unit) {
     val items = listOf("Scan", "Register", "Attendance")
@@ -66,7 +65,6 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
     }
 }
 
-
 @Composable
 fun TopAppBar(title: String) {
     Surface(
@@ -74,9 +72,9 @@ fun TopAppBar(title: String) {
         shadowElevation = 16.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(36.dp), // Slightly increased height
-        color = MaterialTheme.colorScheme.surface, // Use primary color for background
-        contentColor = MaterialTheme.colorScheme.inverseSurface // Use contrasting color for text
+            .height(36.dp),
+        color = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.inverseSurface
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -86,8 +84,8 @@ fun TopAppBar(title: String) {
             Text(
                 modifier = Modifier.padding(2.dp),
                 text = title,
-                style = MaterialTheme.typography.headlineMedium, // Use h6 for a smaller, cleaner title
-                fontSize = 18.sp, // Adjust font size as needed
+                style = MaterialTheme.typography.headlineMedium,
+                fontSize = 22.sp,
                 )
         }
     }
