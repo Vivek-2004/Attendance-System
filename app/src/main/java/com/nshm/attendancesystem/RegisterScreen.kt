@@ -103,6 +103,9 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
 
         Button(
             onClick = {
+
+                /*TODO Call the POST method using the viewModel here*/
+
                 name = ""
                 collegeEmail = ""
                 collegeId = ""
