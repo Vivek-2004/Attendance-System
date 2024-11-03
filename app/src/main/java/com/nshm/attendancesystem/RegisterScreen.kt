@@ -1,62 +1,67 @@
 package com.nshm.attendancesystem
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material3.Button
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun TabRegister() {
+fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
+    // State variables for user input
     var name by remember { mutableStateOf("") }
-    var regNo by remember { mutableStateOf("") }
-    var email by remember { mutableStateOf("") }
+    var collegeEmail by remember { mutableStateOf("") }
+    var collegeId by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
-    var sem by remember { mutableStateOf("") }
+    var contactNumber by remember { mutableStateOf("") }
+    var whatsappNumber by remember { mutableStateOf("") }
 
+    // Column layout for the registration form
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp),
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Top,
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        // Title
+        Text(
+            text = "Register",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
+
+        // Text fields for user input
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
             label = { Text("Student Name") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = regNo,
-            onValueChange = { regNo = it },
-            label = { Text("College Registration No") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-
-        OutlinedTextField(
-            value = email,
-            onValueChange = { email = it },
-            label = { Text("College Email Id") },
+            value = collegeEmail,
+            onValueChange = { collegeEmail = it },
+            label = { Text("College Email ID") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = collegeId,
+            onValueChange = { collegeId = it },
+            label = { Text("College ID") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -65,22 +70,43 @@ fun TabRegister() {
             onValueChange = { year = it },
             label = { Text("Current Year") },
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
-            value = sem,
-            onValueChange = { sem = it },
-            label = { Text("Current Semester") },
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-            modifier = Modifier.fillMaxWidth()
+            value = contactNumber,
+            onValueChange = { contactNumber = it },
+            label = { Text("Contact Number") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedTextField(
+            value = whatsappNumber,
+            onValueChange = { whatsappNumber = it },
+            label = { Text("WhatsApp Number") },
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone),
+            modifier = Modifier.fillMaxWidth(),
+            singleLine = true
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Register button
         Button(
             onClick = {
-                // Handle form submission here
+                // Handle form submission here (e.g., save to database)
+
+                // Reset the text fields
+                name = ""
+                collegeEmail = ""
+                collegeId = ""
+                year = ""
+                contactNumber = ""
+                whatsappNumber = ""
             },
             modifier = Modifier.fillMaxWidth()
         ) {

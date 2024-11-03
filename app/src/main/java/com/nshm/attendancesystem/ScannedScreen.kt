@@ -20,6 +20,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -57,7 +58,13 @@ fun Scanned(attendanceViewModel: AttendanceViewModel = viewModel()) {
             if (userList.isEmpty()) {
                 item {
                     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text("No users found.")
+                        Text(
+                            "No users found.",
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                color = MaterialTheme.colorScheme.primary,
+                                fontWeight = FontWeight.Medium
+                            )
+                        )
                     }
                 }
             } else {
@@ -71,32 +78,40 @@ fun Scanned(attendanceViewModel: AttendanceViewModel = viewModel()) {
 
 @Composable
 fun UserInfoCard(user: User) {
-    if (user.isPresent){
+    if (user.isPresent) {
         Card(
             modifier = Modifier
-                .padding(12.dp)
+                .padding(vertical = 8.dp, horizontal = 16.dp)
                 .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(4.dp),
-            shape = RoundedCornerShape(8.dp)
+            elevation = CardDefaults.cardElevation(6.dp),
+            shape = RoundedCornerShape(12.dp),
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
         ) {
             Column(
                 modifier = Modifier
-                    .padding(12.dp)
+                    .padding(16.dp)
             ) {
                 Text(
                     text = user.name,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
-                    text = user.collegeId.toString(),
-                    fontStyle = FontStyle.Italic
+                    text = "College ID: ${user.collegeId}",
+                    style = MaterialTheme.typography.bodyMedium.copy(
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Text(
                     text = user.collegeEmail.lowercase(Locale.ROOT),
-                    fontStyle = FontStyle.Italic
+                    style = MaterialTheme.typography.bodySmall.copy(
+                        fontStyle = FontStyle.Italic,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 )
             }
         }
