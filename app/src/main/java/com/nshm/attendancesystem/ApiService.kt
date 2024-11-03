@@ -3,6 +3,7 @@ package com.nshm.attendancesystem
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
+import retrofit2.http.POST
 import retrofit2.http.Path
 
 private val retrofit = Retrofit
@@ -21,4 +22,6 @@ interface ApiService {
 
     @GET("users")
     suspend fun getRegisteredStudents(): List<User>
+
+
 }

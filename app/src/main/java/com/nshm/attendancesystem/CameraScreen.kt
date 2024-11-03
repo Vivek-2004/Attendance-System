@@ -153,6 +153,7 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val scanner = BarcodeScanning.getClient()
     val executor = remember { Executors.newSingleThreadExecutor() }
     var scannedText by remember { mutableStateOf("Scan") }
+    var scannedTextPrev by remember { mutableStateOf("Scan") }
     var hasCameraPermission by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
     }

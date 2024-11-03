@@ -1,12 +1,12 @@
 package com.nshm.attendancesystem
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -15,11 +15,13 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.sp
+
 
 @Composable
 fun BottomNavigationBar(navController: NavController, onTitleChange: (String) -> Unit) {
@@ -36,9 +38,21 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
             }
 
             NavigationBarItem(
-                icon = { Icon(imageVector = icon, contentDescription = screen) },
-                label = { Text(screen) },
+                    modifier = Modifier.padding(2.dp),
+                    icon = { Icon(
+                    imageVector = icon,
+                    contentDescription = screen,
+                    modifier = Modifier.size(24.dp),
+                    tint = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                )
+                },
+                label = { Text(
+                    screen,
+                    color = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                    style = if (currentDestination?.route == screen) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodyMedium
+                ) },
                 selected = currentDestination?.route == screen,
+                interactionSource = remember { MutableInteractionSource() },
                 onClick = {
                     navController.navigate(screen) {
                         popUpTo(navController.graph.startDestinationId) { saveState = true }
@@ -55,21 +69,26 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
 
 @Composable
 fun TopAppBar(title: String) {
-    Column (
-        modifier = Modifier.fillMaxWidth().height(40.dp).padding(top = 4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    Surface(
+        tonalElevation = 16.dp,
+        shadowElevation = 16.dp,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(36.dp), // Slightly increased height
+        color = MaterialTheme.colorScheme.surface, // Use primary color for background
+        contentColor = MaterialTheme.colorScheme.inverseSurface // Use contrasting color for text
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-        Text(
-            text = title,
-            style = MaterialTheme.typography.titleLarge,
-            fontSize = 25.sp
-        )
-        Spacer(Modifier.height(15.dp))
-        HorizontalDivider(
-            thickness = 2.dp,
-            color = Color.Gray,
-            modifier = Modifier.fillMaxWidth()
-        )
+            Text(
+                modifier = Modifier.padding(2.dp),
+                text = title,
+                style = MaterialTheme.typography.headlineMedium, // Use h6 for a smaller, cleaner title
+                fontSize = 18.sp, // Adjust font size as needed
+                )
+        }
     }
 }

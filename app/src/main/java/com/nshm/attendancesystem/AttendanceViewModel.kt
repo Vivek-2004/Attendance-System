@@ -28,7 +28,7 @@ class AttendanceViewModel : ViewModel() {
                 val attendanceData = _attendanceService.getScanBar(id)
                 formatData(attendanceData)
             } catch (e: Exception) {
-                messageScan = "Oops!!! Ran into an Error"
+                messageScan = ""
             }
         }
     }
