@@ -38,7 +38,7 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
             )
             Image(
                 modifier = Modifier.size(36.dp),
-                painter = painterResource(id = R.drawable.app_logo_one_xml),
+                painter = painterResource(id = R.drawable.app_logo),
                 contentDescription = "logo")
         }
 
