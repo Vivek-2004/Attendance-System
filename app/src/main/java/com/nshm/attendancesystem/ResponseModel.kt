@@ -16,3 +16,17 @@ data class User(
     val isPresent: Boolean,
     val __v: Int
 )
+
+data class RegistrationData(
+    val name: String,
+    val collegeEmail: String,
+    val collegeId: Long,
+    val year: String,
+    val department: String,
+    val contactNumber: Long,
+    val whatsappNumber: Long
+)
+
+data class ApiResponse(
+    val message: String
+)

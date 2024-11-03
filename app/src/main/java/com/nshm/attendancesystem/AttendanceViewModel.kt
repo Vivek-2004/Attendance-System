@@ -11,6 +11,7 @@ class AttendanceViewModel : ViewModel() {
 
     private val _attendanceService = attendanceService
 
+
     var messageScan by mutableStateOf("")
         private set
 
@@ -50,6 +51,37 @@ class AttendanceViewModel : ViewModel() {
                 registeredStudentsList = registeredStudents
             } catch (e: Exception) {
                 fetchStudentsList()
+            }
+        }
+    }
+
+    fun registerUser(
+        name: String,
+        collegeEmail: String,
+        collegeId: Long,
+        year: String,
+        department: String,
+        contactNumber: Long,
+        whatsappNumber: Long
+    ) {
+        // Create the UserRegistration object from the provided data
+        val userRegistration = RegistrationData(
+            name = name,
+            collegeEmail = collegeEmail,
+            collegeId = collegeId,
+            year = year,
+            department = department,
+            contactNumber = contactNumber,
+            whatsappNumber = whatsappNumber
+        )
+        viewModelScope.launch {
+            try {
+                val response = attendanceService.registerUser(userRegistration)
+                // Handle the response
+                println(response.message)
+            } catch (e: Exception) {
+                // Handle the error
+                println("Error: ${e.message}")
             }
         }
     }

@@ -12,6 +12,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
+
     // State variables for user input
     var name by remember { mutableStateOf("") }
     var collegeEmail by remember { mutableStateOf("") }
@@ -98,9 +99,15 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
         // Register button
         Button(
             onClick = {
-                // Handle form submission here (e.g., save to database)
-
-                // Reset the text fields
+                attendanceViewModel.registerUser(
+                    name = name,
+                    collegeEmail = collegeEmail,
+                    collegeId = collegeId.toLongOrNull() ?: 0L,
+                    year = year,
+                    department = "CSE", // assuming department is fixed as "CSE" based on the sample data
+                    contactNumber = contactNumber.toLongOrNull() ?: 0L,
+                    whatsappNumber = whatsappNumber.toLongOrNull() ?: 0L
+                )
                 name = ""
                 collegeEmail = ""
                 collegeId = ""
