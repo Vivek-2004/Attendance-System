@@ -1,20 +1,18 @@
 package com.nshm.attendancesystem
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
+    // State variables for user input
     var name by remember { mutableStateOf("") }
     var collegeEmail by remember { mutableStateOf("") }
     var collegeId by remember { mutableStateOf("") }
@@ -22,26 +20,22 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
     var contactNumber by remember { mutableStateOf("") }
     var whatsappNumber by remember { mutableStateOf("") }
 
+    // Column layout for the registration form
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(20.dp),
+            .padding(16.dp),
+        verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween) {
-            Text(
-                text = "Welcome to CodeNEST",
-                fontSize = 24.sp,
-                style = MaterialTheme.typography.headlineMedium,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-            Image(
-                modifier = Modifier.size(36.dp),
-                painter = painterResource(id = R.drawable.app_logo),
-                contentDescription = "logo")
-        }
+        // Title
+        Text(
+            text = "Register",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(bottom = 24.dp)
+        )
 
+        // Text fields for user input
         OutlinedTextField(
             value = name,
             onValueChange = { name = it },
@@ -101,11 +95,12 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
         )
         Spacer(modifier = Modifier.height(16.dp))
 
+        // Register button
         Button(
             onClick = {
+                // Handle form submission here (e.g., save to database)
 
-                /*TODO Call the POST method using the viewModel here*/
-
+                // Reset the text fields
                 name = ""
                 collegeEmail = ""
                 collegeId = ""
