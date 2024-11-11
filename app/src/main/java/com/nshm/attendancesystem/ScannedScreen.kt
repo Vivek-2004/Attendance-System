@@ -1,80 +1,148 @@
+@file:Suppress("DEPRECATION")
+
 package com.nshm.attendancesystem
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.delay
 import java.util.Locale
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Scanned(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val userList by attendanceViewModel::registeredStudentsList
-    var isRefreshing by remember { mutableStateOf(true) }
+    var isRefreshing by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
+    var selectedTab by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(isRefreshing) {
         if (isRefreshing) {
+            // Logging for debugging
+            println("Refreshing data...")
             attendanceViewModel.fetchStudentsList()
-            delay(1500)
+            delay(1500) // Simulating network delay
             isRefreshing = false
         }
     }
 
-    SwipeRefresh(
-        state = rememberSwipeRefreshState(isRefreshing),
-        onRefresh = {
-            isRefreshing = true
-            attendanceViewModel.fetchStudentsList()
-        },
+    // Define department names
+    val departmentNames = listOf("CSE", "AIML", "DS")
+
+    // Apply gradient background
+    Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .background(
+                Brush.verticalGradient(
+                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
+                )
+            )
     ) {
-        LazyColumn(modifier = Modifier.fillMaxSize()) {
-            if (userList.isEmpty()) {
-                item {
-                    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                        Text(
-                            "No users found.",
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Medium
-                            )
-                        )
+        Column {
+            // Department Tabs
+            TabRow(selectedTabIndex = selectedTab) {
+                departmentNames.forEachIndexed { index, department ->
+                    Tab(
+                        selected = selectedTab == index,
+                        onClick = { selectedTab = index },
+                        text = { Text(department) }
+                    )
+                }
+            }
+
+            // Search bar
+            OutlinedTextField(
+                value = searchQuery,
+                onValueChange = { query -> searchQuery = query },
+                placeholder = { Text("Search by College ID") },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                trailingIcon = {
+                    IconButton(onClick = { /* Handle search action */ }) {
+                        Icon(Icons.Filled.Search, contentDescription = "Search")
                     }
                 }
-            } else {
-                items(userList) { user ->
-                    UserInfoCard(user)
+            )
+
+            // Swipe Refresh Layout
+            SwipeRefresh(
+                state = rememberSwipeRefreshState(isRefreshing),
+                onRefresh = {
+                    isRefreshing = true
+                    // Log refresh action
+                    println("Swipe to refresh triggered")
+                },
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                // Add a Box for further debugging
+                Box(modifier = Modifier.fillMaxSize()) {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        val filteredUsers = userList.filter { user ->
+                            val matchesDepartment = when (selectedTab) {
+                                0 -> user.department == "CSE"
+                                1 -> user.department == "AIML"
+                                2 -> user.department == "DS"
+                                else -> false
+                            }
+                            val matchesSearchQuery = if (searchQuery.isBlank()) true
+                            else {
+                                try {
+                                    val idToSearch = searchQuery.toLong()
+                                    user.collegeId == idToSearch
+                                } catch (_: NumberFormatException) {
+                                    false
+                                }
+                            }
+                            matchesDepartment && matchesSearchQuery
+                        }
+
+                        if (filteredUsers.isEmpty()) {
+                            item {
+                                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                                    Text(
+                                        "No users found.",
+                                        style = MaterialTheme.typography.bodyLarge.copy(
+                                            color = MaterialTheme.colorScheme.primary,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    )
+                                }
+                            }
+                        } else {
+                            items(filteredUsers) { user ->
+                                UserInfoCard(user)
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 }
+
+
 
 @Composable
 fun UserInfoCard(user: User) {
@@ -83,9 +151,9 @@ fun UserInfoCard(user: User) {
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(6.dp),
+            elevation = CardDefaults.cardElevation(4.dp), // Slight elevation for subtle shadow
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Change to match background theme
         ) {
             Column(
                 modifier = Modifier

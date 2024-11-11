@@ -40,11 +40,16 @@ android {
 }
 
 dependencies {
+    implementation ("androidx.compose.ui:ui:<version>")
+    implementation ("androidx.compose.material3:material3:<version>")
+    implementation ("com.google.accompanist:accompanist-swiperefresh:<version>")
     implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
 
     implementation("androidx.compose.ui:ui:1.7.5")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
+
+    implementation("androidx.compose.material3:material3:1.0.0")
 
 
 

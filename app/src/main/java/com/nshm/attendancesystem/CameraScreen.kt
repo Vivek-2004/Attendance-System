@@ -1,5 +1,7 @@
 package com.nshm.attendancesystem
 
+import androidx.camera.core.Preview
+
 import android.util.Size
 import android.widget.Toast
 import androidx.annotation.OptIn
@@ -19,7 +21,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -35,112 +39,122 @@ import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
-
     val message by attendanceViewModel::messageScan
     val name by attendanceViewModel::name
     val clgId by attendanceViewModel::clgId
 
-    Box(modifier = Modifier.fillMaxSize()) {
-
+    Box(modifier = Modifier
+        .fillMaxSize()
+        .background(
+            brush = androidx.compose.ui.graphics.Brush.verticalGradient(
+                colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
+            )
+        )) {
         CameraPreview()
 
-        Box(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(72.dp)
-                    .padding(vertical = 4.dp, horizontal = 12.dp),
-                horizontalAlignment = Alignment.Start
-            ) {
-                Text(text = "Name : $name",
-                    color = Color.White,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(text = "College Id : $clgId",
-                    color = Color.White,
-                    modifier = Modifier.weight(1f)
-                )
-                Text(text = "Status : $message",
-                    fontWeight = FontWeight.Bold,
-                    fontStyle = FontStyle.Italic,
-                    color = Color.White,
-                    modifier = Modifier.weight(1f)
-                )
-            }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .align(Alignment.TopStart),
+            verticalArrangement = Arrangement.Top
+        ) {
+            Text(
+                text = "Name: $name",
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+            Text(
+                text = "College ID: $clgId",
+                color = Color.White,
+                style = MaterialTheme.typography.titleMedium,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+            Text(
+                text = "Status: $message",
+                fontWeight = FontWeight.Bold,
+                fontStyle = FontStyle.Italic,
+                color = Color.White,
+                modifier = Modifier.padding(vertical = 4.dp)
+            )
+        }
 
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                drawRect(
-                    color = Color.Black.copy(alpha = 0.6f),
-                    size = size
-                )
+        // Overlay effect for camera preview
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            drawRect(
+                color = Color.Black.copy(alpha = 0.6f),
+                size = size
+            )
 
-                val rectWidth = 320.dp.toPx()
-                val rectHeight = 150.dp.toPx()
-                val left = (size.width - rectWidth) / 2
-                val top = (size.height - rectHeight) / 2
+            val rectWidth = 320.dp.toPx()
+            val rectHeight = 150.dp.toPx()
+            val left = (size.width - rectWidth) / 2
+            val top = (size.height - rectHeight) / 2
 
-                drawRect(
-                    color = Color.Transparent,
-                    topLeft = Offset(left, top),
-                    size = androidx.compose.ui.geometry.Size(rectWidth, rectHeight),
-                    blendMode = BlendMode.Clear
-                )
+            // Transparent rectangle for scanning area
+            drawRect(
+                color = Color.Transparent,
+                topLeft = Offset(left, top),
+                size = androidx.compose.ui.geometry.Size(rectWidth, rectHeight),
+                blendMode = BlendMode.Clear
+            )
 
-                val cornerSize = 30.dp.toPx()
-                val strokeWidth = 5.dp.toPx()
+            val cornerSize = 30.dp.toPx()
+            val strokeWidth = 5.dp.toPx()
 
-                drawLine(
-                    color = Color.Red,
-                    start = Offset(left, top),
-                    end = Offset(left + cornerSize, top),
-                    strokeWidth = strokeWidth
-                )
-                drawLine(
-                    color = Color.Red,
-                    start = Offset(left, top),
-                    end = Offset(left, top + cornerSize),
-                    strokeWidth = strokeWidth
-                )
+            // Draw corner markers with consistent colors
+            drawLine(
+                color = Color.Red,
+                start = Offset(left, top),
+                end = Offset(left + cornerSize, top),
+                strokeWidth = strokeWidth
+            )
+            drawLine(
+                color = Color.Red,
+                start = Offset(left, top),
+                end = Offset(left, top + cornerSize),
+                strokeWidth = strokeWidth
+            )
 
-                drawLine(
-                    color = Color.Yellow,
-                    start = Offset(left + rectWidth - cornerSize, top),
-                    end = Offset(left + rectWidth, top),
-                    strokeWidth = strokeWidth
-                )
-                drawLine(
-                    color = Color.Yellow,
-                    start = Offset(left + rectWidth, top),
-                    end = Offset(left + rectWidth, top + cornerSize),
-                    strokeWidth = strokeWidth
-                )
+            drawLine(
+                color = Color.Yellow,
+                start = Offset(left + rectWidth - cornerSize, top),
+                end = Offset(left + rectWidth, top),
+                strokeWidth = strokeWidth
+            )
+            drawLine(
+                color = Color.Yellow,
+                start = Offset(left + rectWidth, top),
+                end = Offset(left + rectWidth, top + cornerSize),
+                strokeWidth = strokeWidth
+            )
 
-                drawLine(
-                    color = Color.Blue,
-                    start = Offset(left, top + rectHeight),
-                    end = Offset(left + cornerSize, top + rectHeight),
-                    strokeWidth = strokeWidth
-                )
-                drawLine(
-                    color = Color.Blue,
-                    start = Offset(left, top + rectHeight - cornerSize),
-                    end = Offset(left, top + rectHeight),
-                    strokeWidth = strokeWidth
-                )
+            drawLine(
+                color = Color.Blue,
+                start = Offset(left, top + rectHeight),
+                end = Offset(left + cornerSize, top + rectHeight),
+                strokeWidth = strokeWidth
+            )
+            drawLine(
+                color = Color.Blue,
+                start = Offset(left, top + rectHeight - cornerSize),
+                end = Offset(left, top + rectHeight),
+                strokeWidth = strokeWidth
+            )
 
-                drawLine(
-                    color = Color.Green,
-                    start = Offset(left + rectWidth - cornerSize, top + rectHeight),
-                    end = Offset(left + rectWidth, top + rectHeight),
-                    strokeWidth = strokeWidth
-                )
-                drawLine(
-                    color = Color.Green,
-                    start = Offset(left + rectWidth, top + rectHeight - cornerSize),
-                    end = Offset(left + rectWidth, top + rectHeight),
-                    strokeWidth = strokeWidth
-                )
-            }
+            drawLine(
+                color = Color.Green,
+                start = Offset(left + rectWidth - cornerSize, top + rectHeight),
+                end = Offset(left + rectWidth, top + rectHeight),
+                strokeWidth = strokeWidth
+            )
+            drawLine(
+                color = Color.Green,
+                start = Offset(left + rectWidth, top + rectHeight - cornerSize),
+                end = Offset(left + rectWidth, top + rectHeight),
+                strokeWidth = strokeWidth
+            )
         }
     }
 }
@@ -153,7 +167,6 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val scanner = BarcodeScanning.getClient()
     val executor = remember { Executors.newSingleThreadExecutor() }
     var scannedText by remember { mutableStateOf("Scan") }
-    var scannedTextPrev by remember { mutableStateOf("Scan") }
     var hasCameraPermission by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
     }
@@ -171,13 +184,11 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
     }
 
     if (hasCameraPermission) {
-        if (scannedText.matches(Regex("\\d+"))) {
-            if (scannedText.length == 11) {
-                Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
-                attendanceViewModel.fetchScan(scannedText)
-            } else {
-                Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
-            }
+        if (scannedText.matches(Regex("\\d+")) && scannedText.length == 11) {
+            Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+            attendanceViewModel.fetchScan(scannedText)
+        } else if (scannedText.isNotEmpty()) {
+            Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
         }
 
         AndroidView(
@@ -187,6 +198,7 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 val preview = Preview.Builder()
                     .setTargetResolution(Size(1280, 720))
                     .build()
+
 
                 cameraProviderFuture.addListener({
                     val cameraProvider = cameraProviderFuture.get()
@@ -205,7 +217,7 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
 
                     try {
                         cameraProvider.unbindAll()
-                        val camera = cameraProvider.bindToLifecycle(
+                        cameraProvider.bindToLifecycle(
                             lifecycleOwner,
                             cameraSelector,
                             preview,

@@ -11,6 +11,7 @@ data class User(
     val collegeEmail: String,
     val collegeId: Long,
     val year: String,
+    val department: String,
     val contactNumber: Long,
     val whatsappNumber: Long,
     val isPresent: Boolean,

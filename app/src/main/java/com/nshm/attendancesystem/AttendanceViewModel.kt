@@ -6,11 +6,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.launch
+import org.json.JSONObject
+import retrofit2.HttpException
 
 class AttendanceViewModel : ViewModel() {
 
     private val _attendanceService = attendanceService
 
+    var response by mutableStateOf("")
 
     var messageScan by mutableStateOf("")
         private set
@@ -28,7 +31,7 @@ class AttendanceViewModel : ViewModel() {
             try {
                 val attendanceData = _attendanceService.getScanBar(id)
                 formatData(attendanceData)
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 messageScan = ""
             }
         }
@@ -49,7 +52,7 @@ class AttendanceViewModel : ViewModel() {
             try {
                 val registeredStudents = _attendanceService.getRegisteredStudents()
                 registeredStudentsList = registeredStudents
-            } catch (e: Exception) {
+            } catch (_: Exception) {
                 fetchStudentsList()
             }
         }
@@ -75,13 +78,26 @@ class AttendanceViewModel : ViewModel() {
             whatsappNumber = whatsappNumber
         )
         viewModelScope.launch {
+
             try {
-                val response = attendanceService.registerUser(userRegistration)
-                // Handle the response
-                println(response.message)
+                val response1 = attendanceService.registerUser(userRegistration)
+                response = response1.message
+            } catch (e: HttpException) {
+                if (e.code() == 400) {
+                    val errorBody = e.response()?.errorBody()?.string()
+
+                    response = errorBody?.let {
+                        try {
+                            JSONObject(it).getString("message")
+                        } catch (jsonException: Exception) {
+                            "Registration failed: Bad Request (Error 400)"
+                        }
+                    } ?: "Registration failed: Bad Request (Error 400)"
+                } else {
+                    response = "Registration failed with error: ${e.code()}"
+                }
             } catch (e: Exception) {
-                // Handle the error
-                println("Error: ${e.message}")
+                response = "Registration failed: ${e.localizedMessage}"
             }
         }
     }
