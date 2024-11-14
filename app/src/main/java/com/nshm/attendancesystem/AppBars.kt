@@ -26,7 +26,11 @@ import androidx.compose.ui.unit.sp
 fun BottomNavigationBar(navController: NavController, onTitleChange: (String) -> Unit) {
     val items = listOf("Scan", "Register", "Attendance")
 
-    NavigationBar(modifier = Modifier.height(65.dp)) {
+    // Use the background color from the theme for the Navigation Bar
+    NavigationBar(
+        modifier = Modifier.height(65.dp),
+        containerColor = MaterialTheme.colorScheme.background // Adjust to your desired background color
+    ) {
         val currentDestination = navController.currentBackStackEntryAsState().value?.destination
         items.forEach { screen ->
             val icon = when (screen) {
@@ -37,19 +41,22 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
             }
 
             NavigationBarItem(
-                    modifier = Modifier.padding(2.dp),
-                    icon = { Icon(
-                    imageVector = icon,
-                    contentDescription = screen,
-                    modifier = Modifier.size(24.dp),
-                    tint = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-                )
+                modifier = Modifier.padding(2.dp),
+                icon = {
+                    Icon(
+                        imageVector = icon,
+                        contentDescription = screen,
+                        modifier = Modifier.size(24.dp),
+                        tint = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                    )
                 },
-                label = { Text(
-                    screen,
-                    color = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-                    style = if (currentDestination?.route == screen) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodyMedium
-                ) },
+                label = {
+                    Text(
+                        screen,
+                        color = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
+                        style = if (currentDestination?.route == screen) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodyMedium
+                    )
+                },
                 selected = currentDestination?.route == screen,
                 interactionSource = remember { MutableInteractionSource() },
                 onClick = {
@@ -72,9 +79,9 @@ fun TopAppBar(title: String) {
         shadowElevation = 16.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(36.dp),
-        color = MaterialTheme.colorScheme.surface,
-        contentColor = MaterialTheme.colorScheme.inverseSurface
+            .height(56.dp), // Increased height for better appearance
+        color = MaterialTheme.colorScheme.background, // Match the background color
+        contentColor = MaterialTheme.colorScheme.onBackground // Adjust to suit your design
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -82,11 +89,11 @@ fun TopAppBar(title: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.padding(2.dp),
+                modifier = Modifier.padding(8.dp), // Adjusted padding for better appearance
                 text = title,
                 style = MaterialTheme.typography.headlineMedium,
-                fontSize = 22.sp,
-                )
+                fontSize = 20.sp, // Slightly reduced font size for a better fit
+            )
         }
     }
 }
