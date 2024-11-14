@@ -16,6 +16,7 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 import android.Manifest
+import android.app.AlertDialog
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -23,6 +24,8 @@ import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -31,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -87,16 +91,16 @@ fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 size = size
             )
 
-            val rectWidth = 320.dp.toPx()
-            val rectHeight = 150.dp.toPx()
+            val rectWidth = 280.dp.toPx()
+            val squareSide = 280.dp.toPx()
             val left = (size.width - rectWidth) / 2
-            val top = (size.height - rectHeight) / 2
+            val top = (size.height - squareSide) / 2
 
             // Transparent rectangle for scanning area
             drawRect(
                 color = Color.Transparent,
                 topLeft = Offset(left, top),
-                size = androidx.compose.ui.geometry.Size(rectWidth, rectHeight),
+                size = androidx.compose.ui.geometry.Size(rectWidth, squareSide),
                 blendMode = BlendMode.Clear
             )
 
@@ -132,27 +136,27 @@ fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
 
             drawLine(
                 color = Color.Blue,
-                start = Offset(left, top + rectHeight),
-                end = Offset(left + cornerSize, top + rectHeight),
+                start = Offset(left, top + squareSide),
+                end = Offset(left + cornerSize, top + squareSide),
                 strokeWidth = strokeWidth
             )
             drawLine(
                 color = Color.Blue,
-                start = Offset(left, top + rectHeight - cornerSize),
-                end = Offset(left, top + rectHeight),
+                start = Offset(left, top + squareSide - cornerSize),
+                end = Offset(left, top + squareSide),
                 strokeWidth = strokeWidth
             )
 
             drawLine(
                 color = Color.Green,
-                start = Offset(left + rectWidth - cornerSize, top + rectHeight),
-                end = Offset(left + rectWidth, top + rectHeight),
+                start = Offset(left + rectWidth - cornerSize, top + squareSide),
+                end = Offset(left + rectWidth, top + squareSide),
                 strokeWidth = strokeWidth
             )
             drawLine(
                 color = Color.Green,
-                start = Offset(left + rectWidth, top + rectHeight - cornerSize),
-                end = Offset(left + rectWidth, top + rectHeight),
+                start = Offset(left + rectWidth, top + squareSide - cornerSize),
+                end = Offset(left + rectWidth, top + squareSide),
                 strokeWidth = strokeWidth
             )
         }
@@ -266,3 +270,40 @@ private fun processImageProxy(
         imageProxy.close()
     }
 }
+
+@Composable
+fun validAlertDialog(valid: Boolean) {
+    // ...
+    val openAlertDialog = remember { mutableStateOf(false) }
+
+    // ...
+    when {
+        // ...
+        openAlertDialog.value -> {
+            AlertDialogValid(
+                onDismissRequest = { openAlertDialog.value = false },
+                onConfirmation = {
+                    openAlertDialog.value = false
+                    println("Confirmation registered") // Add logic here to handle confirmation.
+                },
+                dialogTitle = "Alert dialog example",
+                dialogText = "This is an example of an alert dialog with buttons.",
+                icon = Icons.Default.Info
+            )
+        }
+    }
+}
+
+@Composable
+fun AlertDialogValid(
+    onDismissRequest: () -> Unit,
+    onConfirmation: () -> Unit,
+    dialogTitle: String,
+    dialogText: String,
+    icon: ImageVector
+) {
+    TODO("Not yet implemented")
+}
+
+
+
