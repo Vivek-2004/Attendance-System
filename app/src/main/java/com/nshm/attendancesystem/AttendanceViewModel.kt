@@ -29,7 +29,7 @@ class AttendanceViewModel : ViewModel() {
     fun fetchScan(id: String) {
         viewModelScope.launch {
             try {
-                val attendanceData = _attendanceService.getScanBar(id)
+                val attendanceData = _attendanceService.getScanQr(id)
                 formatData(attendanceData)
             } catch (_: Exception) {
                 messageScan = ""

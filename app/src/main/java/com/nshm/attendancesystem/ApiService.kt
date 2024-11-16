@@ -16,8 +16,8 @@ private val retrofit = Retrofit
 val attendanceService : ApiService = retrofit.create(ApiService::class.java)
 
 interface ApiService {
-    @GET("users/scan/{id}")
-    suspend fun getScanBar(
+    @GET("users/verify/{id}")
+    suspend fun getScanQr(
         @Path("id") id: String
     ): ScanResponse
 

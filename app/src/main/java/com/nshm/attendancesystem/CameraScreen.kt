@@ -1,7 +1,6 @@
 package com.nshm.attendancesystem
 
 import androidx.camera.core.Preview
-
 import android.util.Size
 import android.widget.Toast
 import androidx.annotation.OptIn
@@ -16,16 +15,12 @@ import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
 import java.util.concurrent.Executors
 import android.Manifest
-import android.app.AlertDialog
 import android.content.pm.PackageManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -34,7 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -47,13 +41,8 @@ fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val name by attendanceViewModel::name
     val clgId by attendanceViewModel::clgId
 
-    Box(modifier = Modifier
-        .fillMaxSize()
-        .background(
-            brush = androidx.compose.ui.graphics.Brush.verticalGradient(
-                colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
-            )
-        )) {
+    Box(modifier = Modifier.fillMaxSize()) {
+
         CameraPreview()
 
         Column(
@@ -84,19 +73,17 @@ fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             )
         }
 
-        // Overlay effect for camera preview
         Canvas(modifier = Modifier.fillMaxSize()) {
-            drawRect(
-                color = Color.Black.copy(alpha = 0.6f),
-                size = size
-            )
-
             val rectWidth = 280.dp.toPx()
             val squareSide = 280.dp.toPx()
             val left = (size.width - rectWidth) / 2
             val top = (size.height - squareSide) / 2
 
-            // Transparent rectangle for scanning area
+            drawRect(
+                color = Color.Black.copy(alpha = 0.6f),
+                size = size
+            )
+
             drawRect(
                 color = Color.Transparent,
                 topLeft = Offset(left, top),
@@ -107,7 +94,6 @@ fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             val cornerSize = 30.dp.toPx()
             val strokeWidth = 5.dp.toPx()
 
-            // Draw corner markers with consistent colors
             drawLine(
                 color = Color.Red,
                 start = Offset(left, top),
@@ -170,7 +156,7 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val cameraProviderFuture = remember { ProcessCameraProvider.getInstance(context) }
     val scanner = BarcodeScanning.getClient()
     val executor = remember { Executors.newSingleThreadExecutor() }
-    var scannedText by remember { mutableStateOf("Scan") }
+    var scannedText by remember { mutableStateOf("") }
     var hasCameraPermission by remember {
         mutableStateOf(ContextCompat.checkSelfPermission(context, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED)
     }
@@ -188,10 +174,11 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
     }
 
     if (hasCameraPermission) {
-        if (scannedText.matches(Regex("\\d+")) && scannedText.length == 11) {
-            Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+        if(scannedText.isNotEmpty()) {
             attendanceViewModel.fetchScan(scannedText)
-        } else if (scannedText.isNotEmpty()) {
+            Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+        }
+        else if(scannedText.isEmpty()){
             Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
         }
 
@@ -202,7 +189,6 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 val preview = Preview.Builder()
                     .setTargetResolution(Size(1280, 720))
                     .build()
-
 
                 cameraProviderFuture.addListener({
                     val cameraProvider = cameraProviderFuture.get()
@@ -218,7 +204,6 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
                                 }
                             }
                         }
-
                     try {
                         cameraProvider.unbindAll()
                         cameraProvider.bindToLifecycle(
@@ -270,40 +255,3 @@ private fun processImageProxy(
         imageProxy.close()
     }
 }
-
-@Composable
-fun validAlertDialog(valid: Boolean) {
-    // ...
-    val openAlertDialog = remember { mutableStateOf(false) }
-
-    // ...
-    when {
-        // ...
-        openAlertDialog.value -> {
-            AlertDialogValid(
-                onDismissRequest = { openAlertDialog.value = false },
-                onConfirmation = {
-                    openAlertDialog.value = false
-                    println("Confirmation registered") // Add logic here to handle confirmation.
-                },
-                dialogTitle = "Alert dialog example",
-                dialogText = "This is an example of an alert dialog with buttons.",
-                icon = Icons.Default.Info
-            )
-        }
-    }
-}
-
-@Composable
-fun AlertDialogValid(
-    onDismissRequest: () -> Unit,
-    onConfirmation: () -> Unit,
-    dialogTitle: String,
-    dialogText: String,
-    icon: ImageVector
-) {
-    TODO("Not yet implemented")
-}
-
-
-

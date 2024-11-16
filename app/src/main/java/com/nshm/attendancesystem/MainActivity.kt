@@ -19,7 +19,8 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-               MyApp()
+//               MyApp()
+                CameraScreen()
             }
         }
     }

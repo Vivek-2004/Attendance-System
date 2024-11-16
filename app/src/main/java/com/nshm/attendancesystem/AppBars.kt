@@ -26,10 +26,9 @@ import androidx.compose.ui.unit.sp
 fun BottomNavigationBar(navController: NavController, onTitleChange: (String) -> Unit) {
     val items = listOf("Scan", "Register", "Attendance")
 
-    // Use the background color from the theme for the Navigation Bar
     NavigationBar(
         modifier = Modifier.height(65.dp),
-        containerColor = MaterialTheme.colorScheme.background // Adjust to your desired background color
+        containerColor = MaterialTheme.colorScheme.background
     ) {
         val currentDestination = navController.currentBackStackEntryAsState().value?.destination
         items.forEach { screen ->
