@@ -14,6 +14,7 @@ data class User(
     val department: String,
     val contactNumber: Long,
     val whatsappNumber: Long,
+    val token: String,
     val isPresent: Boolean,
     val __v: Int
 )

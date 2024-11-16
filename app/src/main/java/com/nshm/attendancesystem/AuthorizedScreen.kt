@@ -17,6 +17,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
 fun AuthorizedScreen(
@@ -76,7 +77,7 @@ fun AuthorizedScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = { /* TODO */ },
+            onClick = {  },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             modifier = Modifier

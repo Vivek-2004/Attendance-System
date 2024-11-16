@@ -37,41 +37,15 @@ import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
-    val message by attendanceViewModel::messageScan
     val name by attendanceViewModel::name
-    val clgId by attendanceViewModel::clgId
+
+//    LaunchedEffect(key1 = name) {
+//        AuthorizedScreen(name)
+//    }
 
     Box(modifier = Modifier.fillMaxSize()) {
 
         CameraPreview()
-
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .align(Alignment.TopStart),
-            verticalArrangement = Arrangement.Top
-        ) {
-            Text(
-                text = "Name: $name",
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-            Text(
-                text = "College ID: $clgId",
-                color = Color.White,
-                style = MaterialTheme.typography.titleMedium,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-            Text(
-                text = "Status: $message",
-                fontWeight = FontWeight.Bold,
-                fontStyle = FontStyle.Italic,
-                color = Color.White,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-        }
 
         Canvas(modifier = Modifier.fillMaxSize()) {
             val rectWidth = 280.dp.toPx()

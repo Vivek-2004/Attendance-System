@@ -78,9 +78,9 @@ fun TopAppBar(title: String) {
         shadowElevation = 16.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp), // Increased height for better appearance
-        color = MaterialTheme.colorScheme.background, // Match the background color
-        contentColor = MaterialTheme.colorScheme.onBackground // Adjust to suit your design
+            .height(56.dp),
+        color = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -88,10 +88,10 @@ fun TopAppBar(title: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.padding(8.dp), // Adjusted padding for better appearance
+                modifier = Modifier.padding(8.dp),
                 text = title,
                 style = MaterialTheme.typography.headlineMedium,
-                fontSize = 20.sp, // Slightly reduced font size for a better fit
+                fontSize = 20.sp,
             )
         }
     }
