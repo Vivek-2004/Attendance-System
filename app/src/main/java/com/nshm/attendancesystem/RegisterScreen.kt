@@ -2,9 +2,12 @@ package com.nshm.attendancesystem
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -25,20 +28,28 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val context = LocalContext.current
 
     var name by remember { mutableStateOf("") }
-    var collegeEmail by remember { mutableStateOf("") }
     var collegeId by remember { mutableStateOf("") }
-    var year by remember { mutableStateOf("") }
+    var collegeEmail by remember { mutableStateOf("") }
     var department by remember { mutableStateOf("") }
+    var year by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
     var whatsappNumber by remember { mutableStateOf("") }
 
     val nameFocus = remember { FocusRequester() }
-    val emailFocus = remember { FocusRequester() }
     val idFocus = remember { FocusRequester() }
-    val yearFocus = remember { FocusRequester() }
+    val emailFocus = remember { FocusRequester() }
     val deptFocus = remember { FocusRequester() }
+    val yearFocus = remember { FocusRequester() }
     val contactFocus = remember { FocusRequester() }
     val whatsappFocus = remember { FocusRequester() }
+
+    var deptExpanded by remember { mutableStateOf(false) }
+    val departments = listOf("B.Tech CSE", "B.Tech ECE", "BCA", "MCA")
+    val selectedDepartment = remember { mutableStateOf("Select Department") }
+
+    var yearExpanded by remember { mutableStateOf(false) }
+    val years = listOf("1st", "2nd", "3rd", "4th")
+    val selectedYear = remember { mutableStateOf("Select Current Year") }
 
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -78,7 +89,8 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             shape = MaterialTheme.shapes.medium,
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { emailFocus.requestFocus() })
+            keyboardActions = KeyboardActions(onNext
+            = { emailFocus.requestFocus() })
         )
 
         OutlinedTextField(
@@ -92,7 +104,8 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { yearFocus.requestFocus() }),
+            keyboardActions = KeyboardActions(onNext
+            = { contactFocus.requestFocus() }),
             singleLine = true
         )
 
@@ -107,38 +120,72 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { idFocus.requestFocus() }),
+            keyboardActions = KeyboardActions(onNext
+            = { idFocus.requestFocus() }),
             singleLine = true
         )
 
         OutlinedTextField(
-            value = department,
-            onValueChange = { department = it },
+            value = selectedDepartment.value,
+            onValueChange = { selectedDepartment.value = it },
             label = { Text("Department") },
-            placeholder = { Text("Enter Your Department") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(deptFocus)
-                .weight(1f),
+                .weight(1f)
+                .clickable { deptExpanded = true },
             shape = MaterialTheme.shapes.medium,
+            readOnly = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = { contactFocus.requestFocus() }),
-            singleLine = true
+            trailingIcon = {
+                IconButton(onClick = { deptExpanded = true }) {
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Select Department")
+                }
+                DropdownMenu(
+                    expanded = deptExpanded,
+                    onDismissRequest = { deptExpanded = false },
+                ) {
+                    departments.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = { selectedDepartment.value = option; deptExpanded = false },
+                            text = { Text(text = option) }
+                        )
+                    }
+                }
+            }
         )
 
         OutlinedTextField(
-            value = year,
-            onValueChange = { year = it },
+            value = selectedYear.value,
+            onValueChange = { selectedYear.value = it },
             label = { Text("Current Year") },
-            placeholder = { Text("1st, 2nd, 3rd, 4th") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(yearFocus)
-                .weight(1f),
+                .weight(1f)
+                .clickable { yearExpanded = true },
             shape = MaterialTheme.shapes.medium,
+            readOnly = true,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { deptFocus.requestFocus() }),
-            singleLine = true
+            keyboardActions = KeyboardActions(onNext
+            = { contactFocus.requestFocus() }),
+            trailingIcon = {
+                IconButton(onClick = { yearExpanded = true }) {
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Select Year")
+                }
+                DropdownMenu(
+                    expanded = yearExpanded,
+                    onDismissRequest = { yearExpanded = false },
+                ) {
+                    years.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = { selectedYear.value = option; yearExpanded = false },
+                            text = { Text(text = option) }
+                        )
+                    }
+                }
+            }
         )
 
         OutlinedTextField(
@@ -152,7 +199,8 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { whatsappFocus.requestFocus() }),
+            keyboardActions = KeyboardActions(onNext
+            = { whatsappFocus.requestFocus() }),
             singleLine = true
         )
 
@@ -167,7 +215,9 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+            keyboardActions = KeyboardActions(onDone
+            = { keyboardController?.hide()
+            }),
             singleLine = true
         )
 
@@ -182,7 +232,6 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     contactNumber = contactNumber.toLongOrNull() ?: 0L,
                     whatsappNumber = whatsappNumber.toLongOrNull() ?: 0L
                 )
-
                 name = ""
                 collegeEmail = ""
                 collegeId = ""
@@ -194,7 +243,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
-                .weight(1.3f),
+                .weight(1f),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
