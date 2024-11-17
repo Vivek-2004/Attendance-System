@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -13,10 +15,11 @@ class AttendanceViewModel : ViewModel() {
 
     private val _attendanceService = attendanceService
 
-    var messageScan by mutableStateOf("")
-        private set
+    private val _name = MutableStateFlow("")
 
-    var name by mutableStateOf("")
+    val name: StateFlow<String> get() = _name
+
+    var messageScan by mutableStateOf("")
         private set
 
     var clgId by mutableStateOf("")
@@ -44,7 +47,7 @@ class AttendanceViewModel : ViewModel() {
         } else {
             attendanceData.message
         }
-        name = attendanceData.user.name
+        _name.value = attendanceData.user.name
         clgId = attendanceData.user.collegeId.toString()
     }
 
@@ -68,7 +71,6 @@ class AttendanceViewModel : ViewModel() {
         contactNumber: Long,
         whatsappNumber: Long
     ) {
-        // Create the UserRegistration object from the provided data
         val userRegistration = RegistrationData(
             name = name,
             collegeEmail = collegeEmail,
@@ -79,7 +81,6 @@ class AttendanceViewModel : ViewModel() {
             whatsappNumber = whatsappNumber
         )
         viewModelScope.launch {
-
             try {
                 val response1 = attendanceService.registerUser(userRegistration)
                 response = response1.message

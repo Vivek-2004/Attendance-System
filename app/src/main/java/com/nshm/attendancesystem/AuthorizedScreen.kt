@@ -16,12 +16,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun AuthorizedScreen(
-    name: String
+    name: String,
+    navController: NavController = rememberNavController(),
 ) {
     Column(
         modifier = Modifier
@@ -50,14 +51,18 @@ fun AuthorizedScreen(
         Image(
             painter = painterResource(id = R.drawable.codenest),
             contentDescription = "Logo",
-            modifier = Modifier.width(250.dp).height(30.dp)
+            modifier = Modifier
+                .width(250.dp)
+                .height(30.dp)
         )
         Spacer(modifier = Modifier.height(12.dp))
 
         Image(
             painter = painterResource(id = R.drawable.slogan),
             contentDescription = "Logo",
-            modifier = Modifier.width(340.dp).height(28.dp)
+            modifier = Modifier
+                .width(340.dp)
+                .height(28.dp)
         )
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -77,7 +82,7 @@ fun AuthorizedScreen(
         Spacer(modifier = Modifier.height(32.dp))
 
         Button(
-            onClick = {  },
+            onClick = { navController.navigate("Scan") },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color.White),
             modifier = Modifier
@@ -90,10 +95,4 @@ fun AuthorizedScreen(
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun AuthorizedScreenPreview() {
-    AuthorizedScreen("Vivek Ghosh")
 }

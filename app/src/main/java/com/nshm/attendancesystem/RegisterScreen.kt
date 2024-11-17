@@ -21,8 +21,9 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 @Composable
-fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
-    // State variables for user input
+fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
+    val context = LocalContext.current
+
     var name by remember { mutableStateOf("") }
     var collegeEmail by remember { mutableStateOf("") }
     var collegeId by remember { mutableStateOf("") }
@@ -31,12 +32,6 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
     var contactNumber by remember { mutableStateOf("") }
     var whatsappNumber by remember { mutableStateOf("") }
 
-    // State to observe response and show toast
-    val response = attendanceViewModel.response
-
-
-
-    // FocusRequesters for managing focus
     val nameFocus = remember { FocusRequester() }
     val emailFocus = remember { FocusRequester() }
     val idFocus = remember { FocusRequester() }
@@ -47,9 +42,6 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
 
     // Keyboard controller
     val keyboardController = LocalSoftwareKeyboardController.current
-
-    // Show toast when showToast is true
-    val context = LocalContext.current
 
     // Show toast when response updates (optional for success feedback)
     LaunchedEffect(attendanceViewModel.response) {
@@ -178,7 +170,6 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
 
         Button(
             onClick = {
-                // Handle form submission
                 attendanceViewModel.registerUser(
                     name = name,
                     collegeEmail = collegeEmail,
@@ -189,8 +180,6 @@ fun TabRegister(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     whatsappNumber = whatsappNumber.toLongOrNull() ?: 0L
                 )
 
-
-                // Reset text fields after registration
                 name = ""
                 collegeEmail = ""
                 collegeId = ""

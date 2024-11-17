@@ -51,7 +51,7 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
                 },
                 label = {
                     Text(
-                        screen,
+                        text = screen,
                         color = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
                         style = if (currentDestination?.route == screen) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodyMedium
                     )
