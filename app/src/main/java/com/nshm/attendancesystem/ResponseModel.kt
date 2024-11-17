@@ -2,7 +2,8 @@ package com.nshm.attendancesystem
 
 data class ScanResponse(
     val message: String,
-    val user: User
+    val user: User? = null,
+    val error: String? = null
 )
 
 data class User(

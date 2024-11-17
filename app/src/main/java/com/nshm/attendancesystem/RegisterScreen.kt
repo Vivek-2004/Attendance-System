@@ -2,9 +2,12 @@ package com.nshm.attendancesystem
 
 import android.widget.Toast
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -19,36 +22,40 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val context = LocalContext.current
 
     var name by remember { mutableStateOf("") }
-    var collegeEmail by remember { mutableStateOf("") }
     var collegeId by remember { mutableStateOf("") }
-    var year by remember { mutableStateOf("") }
+    var collegeEmail by remember { mutableStateOf("") }
     var department by remember { mutableStateOf("") }
+    var year by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
     var whatsappNumber by remember { mutableStateOf("") }
 
     val nameFocus = remember { FocusRequester() }
-    val emailFocus = remember { FocusRequester() }
     val idFocus = remember { FocusRequester() }
-    val yearFocus = remember { FocusRequester() }
+    val emailFocus = remember { FocusRequester() }
     val deptFocus = remember { FocusRequester() }
+    val yearFocus = remember { FocusRequester() }
     val contactFocus = remember { FocusRequester() }
     val whatsappFocus = remember { FocusRequester() }
 
-    // Keyboard controller
+    var deptExpanded by remember { mutableStateOf(false) }
+    val departments = listOf("B.Tech CSE", "B.Tech ECE", "BCA", "MCA")
+    val selectedDepartment = remember { mutableStateOf("Select Department") }
+
+    var yearExpanded by remember { mutableStateOf(false) }
+    val years = listOf("1st", "2nd", "3rd", "4th")
+    val selectedYear = remember { mutableStateOf("Select Current Year") }
+
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    // Show toast when response updates (optional for success feedback)
     LaunchedEffect(attendanceViewModel.response) {
         if (attendanceViewModel.response.isNotBlank()) {
-            Toast.makeText(context, attendanceViewModel.response, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, attendanceViewModel.response, Toast.LENGTH_LONG).show()
             attendanceViewModel.response = ""
         }
     }
@@ -58,10 +65,15 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
+                    colors = listOf(
+                        Color(0xFFE3F2FD), Color(0xFFBBDEFB)
+                    )
                 )
             )
-            .padding(16.dp),
+            .padding(
+                horizontal = 16.dp,
+                vertical = 12.dp
+            ),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -69,106 +81,145 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             value = name,
             onValueChange = { name = it },
             label = { Text("Student Name") },
-            placeholder = { Text("Enter your name") },
+            placeholder = { Text("Enter Your Name") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(nameFocus),
+                .focusRequester(nameFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { emailFocus.requestFocus() })
+            keyboardActions = KeyboardActions(onNext
+            = { emailFocus.requestFocus() })
         )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = collegeEmail,
-            onValueChange = { collegeEmail = it },
-            label = { Text("College Email ID") },
-            placeholder = { Text("example@college.edu") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(emailFocus),
-            shape = MaterialTheme.shapes.medium,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { idFocus.requestFocus() }),
-            singleLine = true
-        )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = collegeId,
             onValueChange = { collegeId = it },
             label = { Text("College ID") },
-            placeholder = { Text("Enter your college ID") },
+            placeholder = { Text("Enter Your College ID") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(idFocus),
+                .focusRequester(idFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { yearFocus.requestFocus() }),
+            keyboardActions = KeyboardActions(onNext
+            = { contactFocus.requestFocus() }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = year,
-            onValueChange = { year = it },
-            label = { Text("Current Year") },
-            placeholder = { Text("e.g., 1st, 2nd, etc.") },
+            value = collegeEmail,
+            onValueChange = { collegeEmail = it },
+            label = { Text("College Email") },
+            placeholder = { Text("example.20@nshm.edu.in") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(yearFocus),
+                .focusRequester(emailFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { deptFocus.requestFocus() }),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(onNext
+            = { idFocus.requestFocus() }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = department,
-            onValueChange = { department = it },
+            value = selectedDepartment.value,
+            onValueChange = { selectedDepartment.value = it },
             label = { Text("Department") },
-            placeholder = { Text("Enter your department") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(deptFocus),
+                .focusRequester(deptFocus)
+                .weight(1f)
+                .clickable { deptExpanded = true },
             shape = MaterialTheme.shapes.medium,
+            readOnly = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = { contactFocus.requestFocus() }),
-            singleLine = true
+            trailingIcon = {
+                IconButton(onClick = { deptExpanded = true }) {
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Select Department")
+                }
+                DropdownMenu(
+                    expanded = deptExpanded,
+                    onDismissRequest = { deptExpanded = false },
+                ) {
+                    departments.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = { selectedDepartment.value = option; deptExpanded = false },
+                            text = { Text(text = option) }
+                        )
+                    }
+                }
+            }
         )
-        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = selectedYear.value,
+            onValueChange = { selectedYear.value = it },
+            label = { Text("Current Year") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(yearFocus)
+                .weight(1f)
+                .clickable { yearExpanded = true },
+            shape = MaterialTheme.shapes.medium,
+            readOnly = true,
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(onNext
+            = { contactFocus.requestFocus() }),
+            trailingIcon = {
+                IconButton(onClick = { yearExpanded = true }) {
+                    Icon(Icons.Default.ArrowDropDown, contentDescription = "Select Year")
+                }
+                DropdownMenu(
+                    expanded = yearExpanded,
+                    onDismissRequest = { yearExpanded = false },
+                ) {
+                    years.forEach { option ->
+                        DropdownMenuItem(
+                            onClick = { selectedYear.value = option; yearExpanded = false },
+                            text = { Text(text = option) }
+                        )
+                    }
+                }
+            }
+        )
 
         OutlinedTextField(
             value = contactNumber,
             onValueChange = { contactNumber = it },
             label = { Text("Contact Number") },
-            placeholder = { Text("Enter your contact number") },
+            placeholder = { Text("Enter Your Contact Number") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(contactFocus),
+                .focusRequester(contactFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { whatsappFocus.requestFocus() }),
+            keyboardActions = KeyboardActions(onNext
+            = { whatsappFocus.requestFocus() }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = whatsappNumber,
             onValueChange = { whatsappNumber = it },
             label = { Text("WhatsApp Number") },
-            placeholder = { Text("Enter your WhatsApp number") },
+            placeholder = { Text("Enter Your WhatsApp Number") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(whatsappFocus),
+                .focusRequester(whatsappFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
+            keyboardActions = KeyboardActions(onDone
+            = { keyboardController?.hide()
+            }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
@@ -181,7 +232,6 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     contactNumber = contactNumber.toLongOrNull() ?: 0L,
                     whatsappNumber = whatsappNumber.toLongOrNull() ?: 0L
                 )
-
                 name = ""
                 collegeEmail = ""
                 collegeId = ""
@@ -192,7 +242,8 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp)
+                .weight(1f),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {

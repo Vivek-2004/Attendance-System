@@ -1,5 +1,6 @@
 package com.nshm.attendancesystem
 
+import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
@@ -19,7 +20,7 @@ interface ApiService {
     @GET("users/verify/{id}")
     suspend fun getScanQr(
         @Path("id") id: String
-    ): ScanResponse
+    ): Response<ScanResponse>
 
     @GET("users")
     suspend fun getRegisteredStudents(): List<User>

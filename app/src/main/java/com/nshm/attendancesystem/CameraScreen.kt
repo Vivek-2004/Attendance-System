@@ -36,6 +36,8 @@ fun CameraScreen(
     attendanceViewModel: AttendanceViewModel = viewModel(),
     navController: NavController
 ) {
+    val message by attendanceViewModel::messageScan
+    val color by attendanceViewModel::color
     val nameState by attendanceViewModel.name.collectAsState()
     var showAuthorizedScreen by remember { mutableStateOf(false) }
     var name = nameState
@@ -49,6 +51,8 @@ fun CameraScreen(
     if(showAuthorizedScreen){
         AuthorizedScreen(
             name = name,
+            message = message,
+            color = color,
             navController = navController
         )
         name =""
@@ -194,7 +198,7 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
                             preview,
                             imageAnalyzer
                         )
-                        preview.setSurfaceProvider(previewView.surfaceProvider)
+                        preview.surfaceProvider = previewView.surfaceProvider
                     } catch (e: Exception) {
                         e.printStackTrace()
                     }
