@@ -1,5 +1,3 @@
-@file:Suppress("DEPRECATION")
-
 package com.nshm.attendancesystem
 
 import androidx.compose.foundation.background

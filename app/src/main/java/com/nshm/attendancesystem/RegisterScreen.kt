@@ -54,10 +54,15 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
+                    colors = listOf(
+                        Color(0xFFE3F2FD), Color(0xFFBBDEFB)
+                    )
                 )
             )
-            .padding(16.dp),
+            .padding(
+                horizontal = 16.dp,
+                vertical = 12.dp
+            ),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -68,28 +73,13 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             placeholder = { Text("Enter Your Name") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(nameFocus),
+                .focusRequester(nameFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = { emailFocus.requestFocus() })
         )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        OutlinedTextField(
-            value = collegeEmail,
-            onValueChange = { collegeEmail = it },
-            label = { Text("College Email") },
-            placeholder = { Text("example.20@nshm.edu.in") },
-            modifier = Modifier
-                .fillMaxWidth()
-                .focusRequester(emailFocus),
-            shape = MaterialTheme.shapes.medium,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { idFocus.requestFocus() }),
-            singleLine = true
-        )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = collegeId,
@@ -98,28 +88,28 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             placeholder = { Text("Enter Your College ID") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(idFocus),
+                .focusRequester(idFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = { yearFocus.requestFocus() }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
-            value = year,
-            onValueChange = { year = it },
-            label = { Text("Current Year") },
-            placeholder = { Text("1st, 2nd, 3rd, 4th") },
+            value = collegeEmail,
+            onValueChange = { collegeEmail = it },
+            label = { Text("College Email") },
+            placeholder = { Text("example.20@nshm.edu.in") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(yearFocus),
+                .focusRequester(emailFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
-            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext = { deptFocus.requestFocus() }),
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(onNext = { idFocus.requestFocus() }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = department,
@@ -128,13 +118,28 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             placeholder = { Text("Enter Your Department") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(deptFocus),
+                .focusRequester(deptFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = { contactFocus.requestFocus() }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(12.dp))
+
+        OutlinedTextField(
+            value = year,
+            onValueChange = { year = it },
+            label = { Text("Current Year") },
+            placeholder = { Text("1st, 2nd, 3rd, 4th") },
+            modifier = Modifier
+                .fillMaxWidth()
+                .focusRequester(yearFocus)
+                .weight(1f),
+            shape = MaterialTheme.shapes.medium,
+            keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+            keyboardActions = KeyboardActions(onNext = { deptFocus.requestFocus() }),
+            singleLine = true
+        )
 
         OutlinedTextField(
             value = contactNumber,
@@ -143,13 +148,13 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             placeholder = { Text("Enter Your Contact Number") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(contactFocus),
+                .focusRequester(contactFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Next),
             keyboardActions = KeyboardActions(onNext = { whatsappFocus.requestFocus() }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = whatsappNumber,
@@ -158,13 +163,13 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             placeholder = { Text("Enter Your WhatsApp Number") },
             modifier = Modifier
                 .fillMaxWidth()
-                .focusRequester(whatsappFocus),
+                .focusRequester(whatsappFocus)
+                .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() }),
             singleLine = true
         )
-        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
@@ -188,7 +193,8 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(top = 16.dp),
+                .padding(top = 16.dp)
+                .weight(1.3f),
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {
