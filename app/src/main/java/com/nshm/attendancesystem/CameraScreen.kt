@@ -33,17 +33,17 @@ import androidx.compose.ui.viewinterop.AndroidView
 @Composable
 fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val name by attendanceViewModel.name.collectAsState()
-    var trigger = false
+    var trigger by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
     LaunchedEffect(name) {
         trigger = true
     }
 
-//    if(name.isNotBlank()){
-//        AuthorizedScreen(name = name)
     if(trigger){
         trigger = false
         AuthorizedScreen(name = name)
+        Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
     } else {
         CameraPreview()
 
@@ -148,13 +148,12 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
     }
 
     if (hasCameraPermission) {
-        if(scannedText.isNotEmpty()) {
-            attendanceViewModel.fetchScan(scannedText)
-            Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+        LaunchedEffect(scannedText) {
+            if(scannedText.isNotEmpty()) {
+                attendanceViewModel.fetchScan(scannedText)
+                Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+            }
         }
-//        else if(scannedText.isEmpty()){
-//            Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
-//        }
 
         AndroidView(
             modifier = Modifier.fillMaxSize(),
