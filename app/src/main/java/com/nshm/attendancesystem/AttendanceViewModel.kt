@@ -13,8 +13,6 @@ class AttendanceViewModel : ViewModel() {
 
     private val _attendanceService = attendanceService
 
-    var response by mutableStateOf("")
-
     var messageScan by mutableStateOf("")
         private set
 
@@ -22,14 +20,17 @@ class AttendanceViewModel : ViewModel() {
         private set
 
     var clgId by mutableStateOf("")
+        private set
 
     var registeredStudentsList by mutableStateOf<List<User>>(emptyList())
         private set
 
+    var response by mutableStateOf("")
+
     fun fetchScan(id: String) {
         viewModelScope.launch {
             try {
-                val attendanceData = _attendanceService.getScanBar(id)
+                val attendanceData = _attendanceService.getScanQr(id)
                 formatData(attendanceData)
             } catch (_: Exception) {
                 messageScan = ""

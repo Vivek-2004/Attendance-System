@@ -26,10 +26,9 @@ import androidx.compose.ui.unit.sp
 fun BottomNavigationBar(navController: NavController, onTitleChange: (String) -> Unit) {
     val items = listOf("Scan", "Register", "Attendance")
 
-    // Use the background color from the theme for the Navigation Bar
     NavigationBar(
         modifier = Modifier.height(65.dp),
-        containerColor = MaterialTheme.colorScheme.background // Adjust to your desired background color
+        containerColor = MaterialTheme.colorScheme.background
     ) {
         val currentDestination = navController.currentBackStackEntryAsState().value?.destination
         items.forEach { screen ->
@@ -79,9 +78,9 @@ fun TopAppBar(title: String) {
         shadowElevation = 16.dp,
         modifier = Modifier
             .fillMaxWidth()
-            .height(56.dp), // Increased height for better appearance
-        color = MaterialTheme.colorScheme.background, // Match the background color
-        contentColor = MaterialTheme.colorScheme.onBackground // Adjust to suit your design
+            .height(56.dp),
+        color = MaterialTheme.colorScheme.background,
+        contentColor = MaterialTheme.colorScheme.onBackground
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -89,10 +88,10 @@ fun TopAppBar(title: String) {
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                modifier = Modifier.padding(8.dp), // Adjusted padding for better appearance
+                modifier = Modifier.padding(8.dp),
                 text = title,
                 style = MaterialTheme.typography.headlineMedium,
-                fontSize = 20.sp, // Slightly reduced font size for a better fit
+                fontSize = 20.sp,
             )
         }
     }
