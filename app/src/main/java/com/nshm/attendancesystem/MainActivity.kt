@@ -19,8 +19,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MaterialTheme {
-//               MyApp()
-                CameraScreen()
+                MyApp()
             }
         }
     }
@@ -40,24 +39,21 @@ fun MyApp() {
         }
     ) { innerPadding ->
         NavHost(
+            modifier = Modifier.padding(innerPadding),
             navController = navController,
-            startDestination = "Scan",
-            Modifier.padding(innerPadding)
+            startDestination = "Scan"
         ) {
             composable("Scan") {
-                title.value = ""
                 title.value = "Scan"
                 CameraScreen()
             }
             composable("Register") {
-                title.value = ""
                 title.value = "Register"
-                TabRegister()
+                RegisterScreen()
             }
             composable("Attendance") {
-                title.value = ""
                 title.value = "Scanned Ids"
-                Scanned()
+                AttendanceScreen()
             }
         }
     }

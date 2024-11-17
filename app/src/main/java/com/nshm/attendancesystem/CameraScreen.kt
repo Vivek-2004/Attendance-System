@@ -21,10 +21,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
@@ -32,19 +29,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
-    val name by attendanceViewModel::name
+    val name by attendanceViewModel.name.collectAsState()
+    var trigger by remember { mutableStateOf(false) }
+    val context = LocalContext.current
 
-//    LaunchedEffect(key1 = name) {
-//        AuthorizedScreen(name)
-//    }
+    LaunchedEffect(name) {
+        trigger = true
+    }
 
-    Box(modifier = Modifier.fillMaxSize()) {
-
+    if(trigger){
+        trigger = false
+        AuthorizedScreen(name = name)
+        Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
+    } else {
         CameraPreview()
 
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -148,12 +148,11 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
     }
 
     if (hasCameraPermission) {
-        if(scannedText.isNotEmpty()) {
-            attendanceViewModel.fetchScan(scannedText)
-            Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
-        }
-        else if(scannedText.isEmpty()){
-            Toast.makeText(context, "Invalid ID", Toast.LENGTH_SHORT).show()
+        LaunchedEffect(scannedText) {
+            if(scannedText.isNotEmpty()) {
+                attendanceViewModel.fetchScan(scannedText)
+                Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
+            }
         }
 
         AndroidView(

@@ -24,9 +24,8 @@ import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import kotlinx.coroutines.delay
 import java.util.Locale
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Scanned(attendanceViewModel: AttendanceViewModel = viewModel()) {
+fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val userList by attendanceViewModel::registeredStudentsList
     var isRefreshing by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
