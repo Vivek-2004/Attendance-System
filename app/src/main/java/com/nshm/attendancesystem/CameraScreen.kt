@@ -29,22 +29,32 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.navigation.NavController
 
 @Composable
-fun CameraScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
-    val name by attendanceViewModel.name.collectAsState()
-    var trigger by remember { mutableStateOf(false) }
-    val context = LocalContext.current
+fun CameraScreen(
+    attendanceViewModel: AttendanceViewModel = viewModel(),
+    navController: NavController
+) {
+    val nameState by attendanceViewModel.name.collectAsState()
+    var showAuthorizedScreen by remember { mutableStateOf(false) }
+    var name = nameState
 
     LaunchedEffect(name) {
-        trigger = true
+        if(name.isNotEmpty()){
+            showAuthorizedScreen = true
+        }
     }
 
-    if(trigger){
-        trigger = false
-        AuthorizedScreen(name = name)
-        Toast.makeText(context, name, Toast.LENGTH_SHORT).show()
-    } else {
+    if(showAuthorizedScreen){
+        AuthorizedScreen(
+            name = name,
+            navController = navController
+        )
+        name =""
+    }
+
+    else {
         CameraPreview()
 
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -151,7 +161,6 @@ fun CameraPreview(attendanceViewModel: AttendanceViewModel = viewModel()) {
         LaunchedEffect(scannedText) {
             if(scannedText.isNotEmpty()) {
                 attendanceViewModel.fetchScan(scannedText)
-                Toast.makeText(context, scannedText, Toast.LENGTH_SHORT).show()
             }
         }
 

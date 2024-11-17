@@ -45,7 +45,7 @@ fun MyApp() {
         ) {
             composable("Scan") {
                 title.value = "Scan"
-                CameraScreen()
+                CameraScreen(navController = navController)
             }
             composable("Register") {
                 title.value = "Register"

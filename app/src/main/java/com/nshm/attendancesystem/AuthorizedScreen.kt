@@ -22,7 +22,7 @@ import androidx.navigation.compose.rememberNavController
 @Composable
 fun AuthorizedScreen(
     name: String,
-    navController: NavController = rememberNavController(),
+    navController: NavController,
 ) {
     Column(
         modifier = Modifier
