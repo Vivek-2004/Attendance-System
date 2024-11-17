@@ -19,8 +19,6 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
@@ -42,13 +40,11 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val contactFocus = remember { FocusRequester() }
     val whatsappFocus = remember { FocusRequester() }
 
-    // Keyboard controller
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    // Show toast when response updates (optional for success feedback)
     LaunchedEffect(attendanceViewModel.response) {
         if (attendanceViewModel.response.isNotBlank()) {
-            Toast.makeText(context, attendanceViewModel.response, Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, attendanceViewModel.response, Toast.LENGTH_LONG).show()
             attendanceViewModel.response = ""
         }
     }
@@ -69,7 +65,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             value = name,
             onValueChange = { name = it },
             label = { Text("Student Name") },
-            placeholder = { Text("Enter your name") },
+            placeholder = { Text("Enter Your Name") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(nameFocus),
@@ -83,8 +79,8 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
         OutlinedTextField(
             value = collegeEmail,
             onValueChange = { collegeEmail = it },
-            label = { Text("College Email ID") },
-            placeholder = { Text("example@college.edu") },
+            label = { Text("College Email") },
+            placeholder = { Text("example.20@nshm.edu.in") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(emailFocus),
@@ -99,7 +95,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             value = collegeId,
             onValueChange = { collegeId = it },
             label = { Text("College ID") },
-            placeholder = { Text("Enter your college ID") },
+            placeholder = { Text("Enter Your College ID") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(idFocus),
@@ -114,7 +110,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             value = year,
             onValueChange = { year = it },
             label = { Text("Current Year") },
-            placeholder = { Text("e.g., 1st, 2nd, etc.") },
+            placeholder = { Text("1st, 2nd, 3rd, 4th") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(yearFocus),
@@ -129,7 +125,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             value = department,
             onValueChange = { department = it },
             label = { Text("Department") },
-            placeholder = { Text("Enter your department") },
+            placeholder = { Text("Enter Your Department") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(deptFocus),
@@ -144,7 +140,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             value = contactNumber,
             onValueChange = { contactNumber = it },
             label = { Text("Contact Number") },
-            placeholder = { Text("Enter your contact number") },
+            placeholder = { Text("Enter Your Contact Number") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(contactFocus),
@@ -159,7 +155,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             value = whatsappNumber,
             onValueChange = { whatsappNumber = it },
             label = { Text("WhatsApp Number") },
-            placeholder = { Text("Enter your WhatsApp number") },
+            placeholder = { Text("Enter Your WhatsApp Number") },
             modifier = Modifier
                 .fillMaxWidth()
                 .focusRequester(whatsappFocus),
