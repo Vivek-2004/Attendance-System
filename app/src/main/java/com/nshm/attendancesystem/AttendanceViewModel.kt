@@ -58,6 +58,17 @@ class AttendanceViewModel : ViewModel() {
         }
     }
 
+    fun qrCodeGenerate(token:String){
+        viewModelScope.launch {
+            try {
+                val registeredStudents = _attendanceService.getRegisteredStudents()
+                registeredStudentsList = registeredStudents
+            } catch (_: Exception) {
+                fetchStudentsList()
+            }
+        }
+    }
+
     fun registerUser(
         name: String,
         collegeEmail: String,
@@ -82,6 +93,8 @@ class AttendanceViewModel : ViewModel() {
             try {
                 val response1 = attendanceService.registerUser(userRegistration)
                 response = response1.message
+                var token = response1.user.token
+
             } catch (e: HttpException) {
                 if (e.code() == 400) {
                     val errorBody = e.response()?.errorBody()?.string()

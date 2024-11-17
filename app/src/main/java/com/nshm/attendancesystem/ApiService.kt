@@ -27,5 +27,8 @@ interface ApiService {
     @POST("register")
     suspend fun registerUser(
         @Body userRegistration: RegistrationData
-    ): ApiResponse
+    ): ApiRegisterResponse
+
+    @POST("/qr-generate/{encryptedToken}")
+    suspend fun qrCodeGenerator()
 }
