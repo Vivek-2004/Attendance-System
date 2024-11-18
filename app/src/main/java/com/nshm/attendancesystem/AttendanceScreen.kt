@@ -55,7 +55,6 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             )
     ) {
         Column {
-            // Search bar with filter and refresh buttons
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
