@@ -22,18 +22,27 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
+    val clgDomain = "@nshm.edu.in"
+
+    fun showToast(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+    }
 
     var name by remember { mutableStateOf("") }
     var collegeId by remember { mutableStateOf("") }
     var collegeEmail by remember { mutableStateOf("") }
-    var department by remember { mutableStateOf("") }
-    var year by remember { mutableStateOf("") }
     var contactNumber by remember { mutableStateOf("") }
     var whatsappNumber by remember { mutableStateOf("") }
+    var isLoading by remember { mutableStateOf(false) }
 
     val nameFocus = remember { FocusRequester() }
     val idFocus = remember { FocusRequester() }
@@ -44,18 +53,16 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val whatsappFocus = remember { FocusRequester() }
 
     var deptExpanded by remember { mutableStateOf(false) }
-    val departments = listOf("B.Tech CSE", "B.Tech ECE", "BCA", "MCA")
+    val departments = listOf("CSE", "AI", "BCA", "DS", "ECE", "ME", "MCA", "BBA")
     val selectedDepartment = remember { mutableStateOf("Select Department") }
 
     var yearExpanded by remember { mutableStateOf(false) }
     val years = listOf("1st", "2nd", "3rd", "4th")
     val selectedYear = remember { mutableStateOf("Select Current Year") }
 
-    val keyboardController = LocalSoftwareKeyboardController.current
-
     LaunchedEffect(attendanceViewModel.response) {
         if (attendanceViewModel.response.isNotBlank()) {
-            Toast.makeText(context, attendanceViewModel.response, Toast.LENGTH_LONG).show()
+            showToast("Registration Successful")
             attendanceViewModel.response = ""
         }
     }
@@ -221,29 +228,69 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             singleLine = true
         )
 
+        fun onButtonClick() {
+            attendanceViewModel.registerUser(
+                name = name,
+                collegeEmail = collegeEmail,
+                collegeId = collegeId.toLongOrNull() ?: 0L,
+                year = selectedYear.value,
+                department = selectedDepartment.value,
+                contactNumber = contactNumber.toLongOrNull() ?: 0L,
+                whatsappNumber = whatsappNumber.toLongOrNull() ?: 0L
+            )
+
+            name = ""
+            collegeEmail = ""
+            collegeId = ""
+            selectedYear.value = ""
+            selectedDepartment.value = ""
+            contactNumber = ""
+            whatsappNumber = ""
+
+            isLoading = true
+            CoroutineScope(Dispatchers.Main).launch {
+                delay(2000)
+                isLoading = false
+            }
+        }
+
         Button(
-            onClick = {
-                attendanceViewModel.registerUser(
-                    name = name,
-                    collegeEmail = collegeEmail,
-                    collegeId = collegeId.toLongOrNull() ?: 0L,
-                    year = year,
-                    department = department,
-                    contactNumber = contactNumber.toLongOrNull() ?: 0L,
-                    whatsappNumber = whatsappNumber.toLongOrNull() ?: 0L
-                )
-                name = ""
-                collegeEmail = ""
-                collegeId = ""
-                year = ""
-                department = ""
-                contactNumber = ""
-                whatsappNumber = ""
-            },
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 16.dp)
                 .weight(1f),
+            onClick = {
+                if (
+                    name.isNotBlank()
+                    && collegeId.isNotBlank()
+                    && collegeEmail.isNotBlank()
+                    && selectedDepartment.value.isNotBlank()
+                    && selectedYear.value.isNotBlank()
+                    && contactNumber.isNotBlank()
+                    && whatsappNumber.isNotBlank()
+                ) {
+                    if (collegeEmail.endsWith(clgDomain)) {
+                        if (collegeId.length == 11) {
+                            if (contactNumber.length == 10) {
+                                if (whatsappNumber.length == 10) {
+                                    onButtonClick()
+                                } else {
+                                    showToast("WhatsApp Number must be 10 Digits")
+                                }
+                            } else {
+                                showToast("Contact Number must be 10 Digits")
+                            }
+                        } else {
+                            showToast("College ID must be 11 Digits")
+                        }
+                    } else {
+                        showToast("Enter Valid College Email")
+                    }
+                } else {
+                    showToast("All Fields are Required")
+                }
+            },
+            enabled = !isLoading,
             shape = MaterialTheme.shapes.large,
             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
         ) {

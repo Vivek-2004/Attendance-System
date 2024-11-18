@@ -1,5 +1,11 @@
 package com.nshm.attendancesystem
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.with
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -18,9 +24,72 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.unit.sp
+import androidx.compose.ui.res.painterResource
+import kotlinx.coroutines.delay
+
+@OptIn(ExperimentalAnimationApi::class)
+@Composable
+fun AnimatedTopBar(title: String) {
+    var isVisible by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        while (true) {
+            isVisible = true
+            delay(8000)
+            isVisible = false
+            delay(1000)
+        }
+    }
+
+    Surface(
+        color = MaterialTheme.colorScheme.primaryContainer,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Start
+        ) {
+            Icon(
+//                painter = painterResource(id = R.drawable.app_logo),
+                painter = painterResource(R.drawable.codenest),
+                contentDescription = "App Logo",
+                modifier = Modifier
+                    .padding(end = 8.dp)
+                    .size(40.dp),
+            )
+            AnimatedContent(
+                targetState = isVisible,
+                transitionSpec = {
+                    fadeIn(animationSpec = tween(durationMillis = 3000)) with
+                            fadeOut(animationSpec = tween(durationMillis = 3000))
+                }
+            ) { visible ->
+                if (visible) {
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                } else {
+                    Text(
+                        text = "",
+                        style = MaterialTheme.typography.titleLarge,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
+                }
+            }
+        }
+    }
+}
 
 @Composable
 fun BottomNavigationBar(navController: NavController, onTitleChange: (String) -> Unit) {
@@ -66,32 +135,6 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
                     }
                     onTitleChange(screen)
                 }
-            )
-        }
-    }
-}
-
-@Composable
-fun TopAppBar(title: String) {
-    Surface(
-        tonalElevation = 16.dp,
-        shadowElevation = 16.dp,
-        modifier = Modifier
-            .fillMaxWidth()
-            .height(56.dp),
-        color = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.Center,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                modifier = Modifier.padding(8.dp),
-                text = title,
-                style = MaterialTheme.typography.headlineMedium,
-                fontSize = 20.sp,
             )
         }
     }
