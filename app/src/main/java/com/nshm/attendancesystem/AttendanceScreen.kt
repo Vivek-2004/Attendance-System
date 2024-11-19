@@ -10,7 +10,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -40,7 +39,7 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     var selectedDepartment by remember { mutableStateOf("ALL") }
     var isDropdownExpanded by remember { mutableStateOf(false) }
 
-    val departmentNames = listOf("ALL", "CSE", "AIML", "DS", "ECE", "BCA", "MCA")
+    val departmentNames = listOf("ALL", "CSE", "AIML", "DS", "ECE", "BCA", "MCA", "BBA", "ME", "Civil", )
 
     LaunchedEffect(isRefreshing) {
         if (isRefreshing) {
@@ -49,10 +48,6 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             delay(1200)
             isRefreshing = false
         }
-    }
-
-    fun searchId(id: String) {
-
     }
 
     Box(
@@ -74,26 +69,17 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(10.dp),
                     value = searchQuery,
                     onValueChange = { query -> searchQuery = query },
                     placeholder = { Text("Search by College ID") },
-                    modifier = Modifier.weight(1f),
                     shape = MaterialTheme.shapes.medium,
                     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(onDone = { keyboardController?.hide()
                     }),
-                    singleLine = true,
-                    trailingIcon = {
-                        IconButton(onClick = {
-                            searchId(searchQuery)
-                        }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Filled.Search,
-                                contentDescription = "Search"
-                            )
-                        }
-                    }
+                    singleLine = true
                 )
                 Spacer(modifier = Modifier.width(4.dp))
 
@@ -137,7 +123,7 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     else {
                         try {
                             val idToSearch = searchQuery.toLong()
-                            user.collegeId == idToSearch
+                            user.collegeId.toString().contains(idToSearch.toString())
                         } catch (_: NumberFormatException) {
                             false
                         }

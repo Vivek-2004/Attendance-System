@@ -8,6 +8,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Home
@@ -30,6 +31,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import kotlinx.coroutines.delay
@@ -49,8 +51,10 @@ fun AnimatedTopBar(title: String) {
     }
 
     Surface(
-        color = MaterialTheme.colorScheme.primaryContainer,
-        modifier = Modifier.fillMaxWidth()
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(70.dp),
+        color = MaterialTheme.colorScheme.primaryContainer
     ) {
         Row(
             modifier = Modifier
@@ -60,11 +64,12 @@ fun AnimatedTopBar(title: String) {
             horizontalArrangement = Arrangement.Start
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.app_logo),
+                painter = painterResource(id = R.drawable.app_logo_xml),
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .padding(end = 8.dp)
-                    .size(40.dp),
+                    .size(40.dp)
+                    .clip(RoundedCornerShape(14.dp)),
                 tint = Color.Black
             )
             AnimatedContent(
@@ -98,7 +103,7 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
 
     NavigationBar(
         modifier = Modifier.height(80.dp),
-        containerColor = MaterialTheme.colorScheme.background
+        containerColor = MaterialTheme.colorScheme.primaryContainer
     ) {
         val currentDestination = navController.currentBackStackEntryAsState().value?.destination
         items.forEach { screen ->
@@ -116,7 +121,8 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
                         imageVector = icon,
                         contentDescription = screen,
                         modifier = Modifier.size(24.dp),
-                        tint = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+                        tint = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary
+                                else MaterialTheme.colorScheme.onSurface
                     )
                 },
                 label = {

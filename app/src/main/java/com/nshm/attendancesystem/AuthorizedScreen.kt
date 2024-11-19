@@ -56,7 +56,7 @@ fun AuthorizedScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Image(
-            painter = painterResource(id = R.drawable.app_logo),
+            painter = painterResource(id = R.drawable.app_logo_xml),
             contentDescription = "Logo",
             modifier = Modifier.size(40.dp)
         )

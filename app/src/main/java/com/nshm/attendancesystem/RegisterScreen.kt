@@ -53,7 +53,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val whatsappFocus = remember { FocusRequester() }
 
     var deptExpanded by remember { mutableStateOf(false) }
-    val departments = listOf("CSE", "AIML", "BCA", "DS", "ECE", "ME", "MCA")
+    val departments = listOf("CSE", "AIML", "BCA", "DS", "ECE", "ME", "MCA", "BBA","Civil")
     val selectedDepartment = remember { mutableStateOf("Select Department") }
 
     var yearExpanded by remember { mutableStateOf(false) }
