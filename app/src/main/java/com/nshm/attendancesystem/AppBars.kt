@@ -6,7 +6,6 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.with
-import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -33,7 +32,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalAnimationApi::class)
@@ -66,8 +64,8 @@ fun AnimatedTopBar(title: String) {
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .padding(end = 8.dp)
-                    .size(40.dp)
-                    .background(Color.Transparent),
+                    .size(40.dp),
+                tint = Color.Black
             )
             AnimatedContent(
                 targetState = isVisible,
@@ -80,13 +78,13 @@ fun AnimatedTopBar(title: String) {
                     Text(
                         text = title,
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = Color.Black
                     )
                 } else {
                     Text(
                         text = "",
                         style = MaterialTheme.typography.titleLarge,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer
+                        color = Color.Black
                     )
                 }
             }
@@ -99,7 +97,7 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
     val items = listOf("Scan", "Register", "Attendance")
 
     NavigationBar(
-        modifier = Modifier.height(65.dp),
+        modifier = Modifier.height(80.dp),
         containerColor = MaterialTheme.colorScheme.background
     ) {
         val currentDestination = navController.currentBackStackEntryAsState().value?.destination
@@ -140,13 +138,5 @@ fun BottomNavigationBar(navController: NavController, onTitleChange: (String) ->
                 }
             )
         }
-    }
-}
-
-@PreviewLightDark
-@Composable
-fun prev() {
-    MaterialTheme {
-        AnimatedTopBar("Vivek")
     }
 }
