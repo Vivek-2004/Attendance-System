@@ -53,6 +53,9 @@ dependencies {
     implementation (libs.androidx.camera.view)
     implementation (libs.androidx.camera.extensions)
 
+    // ML Kit Barcode Scanning
+    implementation (libs.barcode.scanning)
+
     // Network Calls
     implementation(libs.retrofit)
 
@@ -61,9 +64,6 @@ dependencies {
 
     //LiveData
     implementation (libs.androidx.runtime.livedata)
-
-    // ML Kit Barcode Scanning
-    //    implementation ("com.google.mlkit:barcode-scanning:17.3.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
