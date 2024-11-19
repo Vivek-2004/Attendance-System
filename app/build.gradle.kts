@@ -41,36 +41,29 @@ android {
 
 dependencies {
 
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.36.0")
-
-    implementation("androidx.compose.ui:ui:1.7.5")
-
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.9.0")
-
-    implementation("androidx.compose.material3:material3:1.0.0")
-
-    implementation ("androidx.navigation:navigation-compose:2.7.0")
-
-
-
-    // Network Calls
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-
-    // JSON to Kotlin Object Mapping
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
-
-    //LiveData
-    implementation ("androidx.compose.runtime:runtime-livedata:1.7.5")
+    implementation(libs.accompanist.swiperefresh)
+    implementation(libs.ui)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.material3)
 
     // CameraX dependencies
-    implementation ("androidx.camera:camera-core:1.4.0")
-    implementation ("androidx.camera:camera-camera2:1.4.0")
-    implementation ("androidx.camera:camera-lifecycle:1.4.0")
-    implementation ("androidx.camera:camera-view:1.4.0")
-    implementation ("androidx.camera:camera-extensions:1.4.0")
+    implementation (libs.androidx.camera.core)
+    implementation (libs.androidx.camera.camera2)
+    implementation (libs.androidx.camera.lifecycle)
+    implementation (libs.androidx.camera.view)
+    implementation (libs.androidx.camera.extensions)
+
+    // Network Calls
+    implementation(libs.retrofit)
+
+    // JSON to Kotlin Object Mapping
+    implementation(libs.converter.gson)
+
+    //LiveData
+    implementation (libs.androidx.runtime.livedata)
 
     // ML Kit Barcode Scanning
-    implementation ("com.google.mlkit:barcode-scanning:17.3.0")
+    //    implementation ("com.google.mlkit:barcode-scanning:17.3.0")
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
