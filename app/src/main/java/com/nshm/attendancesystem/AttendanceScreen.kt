@@ -6,8 +6,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
@@ -17,8 +18,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
@@ -27,22 +32,27 @@ import java.util.Locale
 @Composable
 fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     val context = LocalContext.current
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     val userList by attendanceViewModel::registeredStudentsList
-    var isRefreshing by remember { mutableStateOf(false) }
+    var isRefreshing by remember { mutableStateOf(true) }
     var searchQuery by remember { mutableStateOf("") }
-    var selectedDepartment by remember { mutableStateOf("All") }
+    var selectedDepartment by remember { mutableStateOf("ALL") }
     var isDropdownExpanded by remember { mutableStateOf(false) }
 
     val departmentNames = listOf("ALL", "CSE", "AIML", "DS", "ECE", "BCA", "MCA")
 
     LaunchedEffect(isRefreshing) {
         if (isRefreshing) {
-            Toast.makeText(context, "Refreshing data...", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Refreshing Data", Toast.LENGTH_SHORT).show()
             attendanceViewModel.fetchStudentsList()
-            delay(1500)
+            delay(1200)
             isRefreshing = false
         }
+    }
+
+    fun searchId(id: String) {
+
     }
 
     Box(
@@ -68,16 +78,31 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     onValueChange = { query -> searchQuery = query },
                     placeholder = { Text("Search by College ID") },
                     modifier = Modifier.weight(1f),
+                    shape = MaterialTheme.shapes.medium,
+                    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(onDone = { keyboardController?.hide()
+                    }),
+                    singleLine = true,
                     trailingIcon = {
-                        IconButton(onClick = { /* Handle search action */ }) {
-                            Icon(Icons.Filled.Search, contentDescription = "Search")
+                        IconButton(onClick = {
+                            searchId(searchQuery)
+                        }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Filled.Search,
+                                contentDescription = "Search"
+                            )
                         }
                     }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
+
                 Box {
                     IconButton(onClick = { isDropdownExpanded = true }) {
-                        Icon(Icons.Default.Add, contentDescription = "Filter")
+                        Icon(
+                            painter = painterResource(R.drawable.filter),
+                            contentDescription = "Filter"
+                        )
                     }
                     DropdownMenu(
                         expanded = isDropdownExpanded,
@@ -107,7 +132,7 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             ) {
                 val filteredUsers = userList.filter { user ->
                     val matchesDepartment =
-                        selectedDepartment == "All" || user.department == selectedDepartment
+                        selectedDepartment == "ALL" || user.department == selectedDepartment
                     val matchesSearchQuery = if (searchQuery.isBlank()) true
                     else {
                         try {
