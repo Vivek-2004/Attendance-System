@@ -96,8 +96,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             shape = MaterialTheme.shapes.medium,
             singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext
-            = { emailFocus.requestFocus() })
+            keyboardActions = KeyboardActions(onNext = { emailFocus.requestFocus() })
         )
 
         OutlinedTextField(
@@ -111,8 +110,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext
-            = { contactFocus.requestFocus() }),
+            keyboardActions = KeyboardActions(onNext = { contactFocus.requestFocus() }),
             singleLine = true
         )
 
@@ -127,8 +125,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email, imeAction = ImeAction.Next),
-            keyboardActions = KeyboardActions(onNext
-            = { idFocus.requestFocus() }),
+            keyboardActions = KeyboardActions(onNext = { idFocus.requestFocus() }),
             singleLine = true
         )
 
@@ -222,8 +219,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 .weight(1f),
             shape = MaterialTheme.shapes.medium,
             keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Phone, imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone
-            = { keyboardController?.hide()
+            keyboardActions = KeyboardActions(onDone = { keyboardController?.hide()
             }),
             singleLine = true
         )
@@ -248,8 +244,9 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             whatsappNumber = ""
 
             isLoading = true
+
             CoroutineScope(Dispatchers.Main).launch {
-                delay(2000)
+                delay(3200)
                 isLoading = false
             }
         }
@@ -284,7 +281,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                             showToast("College ID must be 11 Digits")
                         }
                     } else {
-                        showToast("Enter Valid College Email")
+                        showToast("Enter a Valid College Email")
                     }
                 } else {
                     showToast("All Fields are Required")
