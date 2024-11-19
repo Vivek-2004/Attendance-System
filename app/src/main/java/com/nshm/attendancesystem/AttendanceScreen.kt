@@ -26,21 +26,21 @@ import java.util.Locale
 
 @Composable
 fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
+    val context = LocalContext.current
+
     val userList by attendanceViewModel::registeredStudentsList
     var isRefreshing by remember { mutableStateOf(false) }
     var searchQuery by remember { mutableStateOf("") }
     var selectedDepartment by remember { mutableStateOf("All") }
     var isDropdownExpanded by remember { mutableStateOf(false) }
 
-    val departmentNames = listOf("All", "CSE", "AIML", "DS", "ECE", "BCA", "MCA")
-    val context = LocalContext.current // Context for showing Toast
+    val departmentNames = listOf("ALL", "CSE", "AIML", "DS", "ECE", "BCA", "MCA")
 
     LaunchedEffect(isRefreshing) {
         if (isRefreshing) {
-            // Show a toast message
             Toast.makeText(context, "Refreshing data...", Toast.LENGTH_SHORT).show()
             attendanceViewModel.fetchStudentsList()
-            delay(1500) // Simulating network delay
+            delay(1500)
             isRefreshing = false
         }
     }
@@ -50,7 +50,9 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             .fillMaxSize()
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(Color(0xFFE3F2FD), Color(0xFFBBDEFB))
+                    colors = listOf(
+                        Color(0xFFE3F2FD), Color(0xFFBBDEFB)
+                    )
                 )
             )
     ) {
@@ -73,7 +75,6 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     }
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                // Dropdown for filtering
                 Box {
                     IconButton(onClick = { isDropdownExpanded = true }) {
                         Icon(Icons.Default.Add, contentDescription = "Filter")
@@ -94,13 +95,11 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     }
                 }
                 Spacer(modifier = Modifier.width(4.dp))
-                // Refresh button
                 IconButton(onClick = { isRefreshing = true }) {
                     Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                 }
             }
 
-            // List of users
             LazyColumn(
                 modifier = Modifier
                     .fillMaxSize()
@@ -153,9 +152,9 @@ fun UserInfoCard(user: User) {
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(4.dp), // Slight elevation for subtle shadow
+            elevation = CardDefaults.cardElevation(4.dp),
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Change to match background theme
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column(
                 modifier = Modifier

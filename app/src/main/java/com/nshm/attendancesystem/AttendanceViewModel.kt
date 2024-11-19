@@ -22,6 +22,7 @@ class AttendanceViewModel : ViewModel() {
 
     var messageScan by mutableStateOf("")
         private set
+
     var color by mutableStateOf("")
         private set
 

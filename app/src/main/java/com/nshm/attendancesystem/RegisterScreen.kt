@@ -292,9 +292,25 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             },
             enabled = !isLoading,
             shape = MaterialTheme.shapes.large,
-            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+            colors = ButtonDefaults.buttonColors(
+                containerColor = MaterialTheme.colorScheme.primary
+            )
         ) {
-            Text("Register", style = MaterialTheme.typography.bodyLarge.copy(color = Color.White))
+            if (isLoading) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(16.dp),
+                    color = Color.White,
+                    strokeWidth = 2.dp
+                )
+            } else {
+                Text(
+                    text = "Register",
+                    style = MaterialTheme.typography.bodyLarge
+                        .copy(
+                            color = Color.White
+                        )
+                )
+            }
         }
     }
 }
