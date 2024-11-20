@@ -99,14 +99,14 @@ class AttendanceViewModel : ViewModel() {
                         try {
                             JSONObject(it).getString("message")
                         } catch (jsonException: Exception) {
-                            "Registration failed: Bad Request (Error 400)"
+                            "Registration Failed"
                         }
-                    } ?: "Registration failed: Bad Request (Error 400)"
+                    } ?: "Registration Failed"
                 } else {
-                    response = "Registration failed with error: ${e.code()}"
+                    response = "Registration Failed with Error: ${e.code()}"
                 }
             } catch (e: Exception) {
-                response = "Registration failed: ${e.localizedMessage}"
+                response = "Registration Failed: ${e.localizedMessage}"
             }
         }
     }

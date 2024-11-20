@@ -163,13 +163,12 @@ fun UserInfoCard(user: User) {
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 16.dp)
                 .fillMaxWidth(),
-            elevation = CardDefaults.cardElevation(4.dp), // Slight elevation for subtle shadow
+            elevation = CardDefaults.cardElevation(4.dp),
             shape = RoundedCornerShape(12.dp),
-            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface) // Change to match background theme
+            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
         ) {
             Column(
-                modifier = Modifier
-                    .padding(16.dp)
+                modifier = Modifier.padding(16.dp)
             ) {
                 Text(
                     text = user.name,
@@ -179,8 +178,8 @@ fun UserInfoCard(user: User) {
                     )
                 )
                 Spacer(modifier = Modifier.height(8.dp))
-                Row {
 
+                Row {
                     Text(
                         text = "College ID: ${user.collegeId}",
                         style = MaterialTheme.typography.bodyMedium.copy(
@@ -188,27 +187,20 @@ fun UserInfoCard(user: User) {
                         )
                     )
                     Spacer(modifier = Modifier.width(8.dp))
+
                     Text(
-                        text = "Dept: " +  user.department.uppercase(Locale.ROOT),
-                        style = MaterialTheme.typography.bodySmall.copy(
+                        text = " [ ${user.department.uppercase(Locale.ROOT)} - ${user.year.lowercase(Locale.ROOT)} ]",
+                        style = MaterialTheme.typography.bodyMedium.copy(
                             fontStyle = FontStyle.Italic,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     )
                 }
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Row{
                     Text(
                         text = user.collegeEmail.lowercase(Locale.ROOT),
-                        style = MaterialTheme.typography.bodySmall.copy(
-                            fontStyle = FontStyle.Italic,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    )
-
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = user.year.lowercase(Locale.ROOT) + " year",
                         style = MaterialTheme.typography.bodySmall.copy(
                             fontStyle = FontStyle.Italic,
                             color = MaterialTheme.colorScheme.onSurfaceVariant

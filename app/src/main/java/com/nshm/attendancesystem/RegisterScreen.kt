@@ -62,7 +62,11 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
 
     LaunchedEffect(attendanceViewModel.response) {
         if (attendanceViewModel.response.isNotBlank()) {
-            showToast("Registration Successful")
+            if( attendanceViewModel.response == "User with this ID already exists" || attendanceViewModel.response == "User with this email already exists" ) {
+                showToast("User Already Exists")
+            } else {
+                showToast("User Registered Successfully")
+            }
             attendanceViewModel.response = ""
         }
     }
