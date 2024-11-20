@@ -38,8 +38,17 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
     var searchQuery by remember { mutableStateOf("") }
     var selectedDepartment by remember { mutableStateOf("ALL") }
     var isDropdownExpanded by remember { mutableStateOf(false) }
+    val departmentNames = listOf("ALL", "CSE", "AIML", "DS", "ECE", "BCA", "MCA", "BBA", "ME", "Civil")
+    var attendanceCount = 0
 
-    val departmentNames = listOf("ALL", "CSE", "AIML", "DS", "ECE", "BCA", "MCA", "BBA", "ME", "Civil", )
+    userList.forEach { user ->
+        if ( selectedDepartment == "ALL" && user.isPresent) {
+            attendanceCount++
+        }
+        else if ( user.department == selectedDepartment && user.isPresent ) {
+            attendanceCount++
+        }
+    }
 
     LaunchedEffect(isRefreshing) {
         if (isRefreshing) {
@@ -65,13 +74,13 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(8.dp),
+                    .padding(6.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 OutlinedTextField(
                     modifier = Modifier
                         .weight(1f)
-                        .padding(10.dp),
+                        .padding(8.dp),
                     value = searchQuery,
                     onValueChange = { query -> searchQuery = query },
                     placeholder = { Text("Search by College ID") },
@@ -81,7 +90,23 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     }),
                     singleLine = true
                 )
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(2.dp))
+
+                Column(modifier = Modifier.wrapContentWidth()) {
+                    Text(
+                        text = attendanceCount.toString(),
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                    Text(
+                        text = "Entries",
+                        style = MaterialTheme.typography.bodySmall.copy(
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    )
+                }
+                Spacer(modifier = Modifier.width(2.dp))
 
                 Box {
                     IconButton(onClick = { isDropdownExpanded = true }) {
@@ -105,7 +130,8 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                         }
                     }
                 }
-                Spacer(modifier = Modifier.width(4.dp))
+                Spacer(modifier = Modifier.width(2.dp))
+
                 IconButton(onClick = { isRefreshing = true }) {
                     Icon(Icons.Default.Refresh, contentDescription = "Refresh")
                 }
@@ -117,9 +143,8 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                     .padding(horizontal = 16.dp)
             ) {
                 val filteredUsers = userList.filter { user ->
-                    val matchesDepartment =
-                        selectedDepartment == "ALL" || user.department == selectedDepartment
-                    val matchesSearchQuery = if (searchQuery.isBlank()) true
+                    val matchesDepartment = selectedDepartment == "ALL" || user.department == selectedDepartment
+                    val matchesSearchQuery = if ( searchQuery.isBlank() ) true
                     else {
                         try {
                             val idToSearch = searchQuery.toLong()
