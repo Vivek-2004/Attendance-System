@@ -17,6 +17,7 @@ data class User(
     val whatsappNumber: Long,
     val token: String,
     val isPresent: Boolean,
+    val isSeminarAttendee: Boolean,
     val __v: Int
 )
 

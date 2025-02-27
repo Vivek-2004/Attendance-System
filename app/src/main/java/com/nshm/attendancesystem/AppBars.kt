@@ -11,9 +11,11 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Create
+import androidx.compose.material.icons.filled.Face
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -97,52 +99,3 @@ fun AnimatedTopBar(title: String) {
     }
 }
 
-@Composable
-fun BottomNavigationBar(navController: NavController, onTitleChange: (String) -> Unit) {
-    val items = listOf("Scan", "Register", "Attendance")
-
-    NavigationBar(
-        modifier = Modifier.height(80.dp),
-        containerColor = MaterialTheme.colorScheme.primaryContainer
-    ) {
-        val currentDestination = navController.currentBackStackEntryAsState().value?.destination
-        items.forEach { screen ->
-            val icon = when (screen) {
-                "Scan" -> Icons.Default.Search
-                "Register" -> Icons.Default.Create
-                "Attendance" -> Icons.Default.Person
-                else -> Icons.Default.Home
-            }
-
-            NavigationBarItem(
-                modifier = Modifier.padding(2.dp),
-                icon = {
-                    Icon(
-                        imageVector = icon,
-                        contentDescription = screen,
-                        modifier = Modifier.size(24.dp),
-                        tint = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary
-                                else MaterialTheme.colorScheme.onSurface
-                    )
-                },
-                label = {
-                    Text(
-                        text = screen,
-                        color = if (currentDestination?.route == screen) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface,
-                        style = if (currentDestination?.route == screen) MaterialTheme.typography.bodyLarge else MaterialTheme.typography.bodyMedium
-                    )
-                },
-                selected = currentDestination?.route == screen,
-                interactionSource = remember { MutableInteractionSource() },
-                onClick = {
-                    navController.navigate(screen) {
-                        popUpTo(navController.graph.startDestinationId) { saveState = true }
-                        launchSingleTop = true
-                        restoreState = true
-                    }
-                    onTitleChange(screen)
-                }
-            )
-        }
-    }
-}
