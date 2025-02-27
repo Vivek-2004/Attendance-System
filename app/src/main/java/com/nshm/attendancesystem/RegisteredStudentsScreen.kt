@@ -183,7 +183,7 @@ fun RegisteredStudentsScreen(attendanceViewModel: AttendanceViewModel = viewMode
 
 @Composable
 fun RegisteredUserInfoCard(user: User) {
-    if (user.isPresent) {
+    if (user.isSeminarAttendee) {
         Card(
             modifier = Modifier
                 .padding(vertical = 8.dp, horizontal = 16.dp)
