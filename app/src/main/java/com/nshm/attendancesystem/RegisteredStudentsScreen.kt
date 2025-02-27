@@ -280,7 +280,7 @@ fun RegisteredStudentsScreen(attendanceViewModel: AttendanceViewModel = viewMode
                         }
                     } else {
                         items(filteredUsers) { user ->
-                            UserInfoCard(user)
+                            RegisteredUserInfoCard(user)
                         }
                     }
                 }
