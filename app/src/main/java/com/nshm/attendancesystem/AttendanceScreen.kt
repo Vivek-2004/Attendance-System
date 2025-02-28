@@ -80,7 +80,7 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
         if (!isRefreshing) return@LaunchedEffect
         try {
             attendanceViewModel.fetchStudentsList()
-            delay(1200)
+            delay(2000)
         } finally {
             isRefreshing = false
         }

@@ -329,6 +329,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                         DropdownMenu(
                             expanded = deptExpanded,
                             onDismissRequest = { deptExpanded = false },
+                            modifier = Modifier.background(Color.White)
                         ) {
                             departments.forEach { option ->
                                 DropdownMenuItem(
@@ -362,6 +363,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                         DropdownMenu(
                             expanded = yearExpanded,
                             onDismissRequest = { yearExpanded = false },
+                            modifier = Modifier.background(Color.White)
                         ) {
                             years.forEach { option ->
                                 DropdownMenuItem(
@@ -540,7 +542,7 @@ fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(25.dp),
-            containerColor = MaterialTheme.colorScheme.secondary,
+            containerColor = Color.Black,
             contentColor = MaterialTheme.colorScheme.onSecondary,
             elevation = FloatingActionButtonDefaults.elevation(6.dp)
         ) {
