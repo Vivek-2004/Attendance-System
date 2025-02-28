@@ -1,5 +1,6 @@
 package com.nshm.attendancesystem
 
+import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,7 +15,7 @@ private val retrofit = Retrofit
     .addConverterFactory(GsonConverterFactory.create())
     .build()
 
-val attendanceService : ApiService = retrofit.create(ApiService::class.java)
+val attendanceService: ApiService = retrofit.create(ApiService::class.java)
 
 interface ApiService {
     @GET("users/verify/{id}")
@@ -29,4 +30,9 @@ interface ApiService {
     suspend fun registerUser(
         @Body userRegistration: RegistrationData
     ): ApiResponse
+
+    @POST("send-seminar-pass-email")
+    suspend fun sendMail(
+        @Body collegeId: SendMailBody
+    ): Response<ResponseBody>
 }

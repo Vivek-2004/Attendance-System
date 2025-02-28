@@ -5,14 +5,34 @@ import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.slideInVertically
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.QrCodeScanner
-import androidx.compose.material.icons.rounded.PersonAdd
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FilledTonalButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -25,7 +45,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import java.util.Locale
-import kotlinx.coroutines.delay
 
 @Composable
 fun AuthorizedScreen(
@@ -42,10 +61,10 @@ fun AuthorizedScreen(
         animationStarted = true
     }
 
-    if (color == "green"){
+    if (color == "green") {
         bgColor = R.color.bgGreen
         txtColor = R.color.textGreen
-    } else if(color == "yellow") {
+    } else if (color == "yellow") {
         bgColor = R.color.bgYellow
         txtColor = R.color.textYellow
     } else if (color == "red") {
@@ -180,41 +199,6 @@ fun AuthorizedScreen(
                         }
 
                         Spacer(modifier = Modifier.height(32.dp))
-
-                        if (color == "red") {
-                            ElevatedButton(
-                                onClick = {
-                                    navController.navigate("Register")
-                                },
-                                shape = RoundedCornerShape(12.dp),
-                                colors = ButtonDefaults.elevatedButtonColors(
-                                    containerColor = Color.White,
-                                    contentColor = colorResource(txtColor)
-                                ),
-                                elevation = ButtonDefaults.elevatedButtonElevation(
-                                    defaultElevation = 4.dp,
-                                    pressedElevation = 8.dp
-                                ),
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp)
-                                    .padding(horizontal = 32.dp)
-                            ) {
-                                Icon(
-                                    Icons.Rounded.PersonAdd,
-                                    contentDescription = "Register",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = "Register Now",
-                                    fontSize = 16.sp,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                            }
-
-                            Spacer(modifier = Modifier.height(16.dp))
-                        }
 
                         FilledTonalButton(
                             onClick = {

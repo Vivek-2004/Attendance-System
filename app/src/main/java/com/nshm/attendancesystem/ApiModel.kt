@@ -34,3 +34,7 @@ data class RegistrationData(
 data class ApiResponse(
     val message: String
 )
+
+data class SendMailBody(
+    val collegeId: Long
+)

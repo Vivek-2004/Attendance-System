@@ -34,19 +34,22 @@ class AttendanceViewModel : ViewModel() {
 
     var response by mutableStateOf("")
 
+    var mailMessage by mutableStateOf("")
+
     fun fetchScan(id: String) {
         viewModelScope.launch {
             try {
                 val attendanceData = _attendanceService.getScanQr(id)
                 formatData(attendanceData)
-            } catch (_: Exception) { }
+            } catch (_: Exception) {
+            }
         }
     }
 
     private fun formatData(attendanceData: Response<ScanResponse>) {
         _name.value = attendanceData.body()?.user?.name ?: "User Not Found"
         message = attendanceData.body()?.message ?: "User Not Found"
-        if( message == "User checked in successfully" ){
+        if (message == "User checked in successfully") {
             messageScan = "Authorized"
             color = "green"
         } else if (message == "Duplicate entry") {
@@ -65,6 +68,27 @@ class AttendanceViewModel : ViewModel() {
                 registeredStudentsList = registeredStudents
             } catch (_: Exception) {
                 fetchStudentsList()
+            }
+        }
+    }
+
+    fun sendMail(
+        collegeId: String
+    ) {
+        viewModelScope.launch {
+            mailMessage = try {
+                val response = _attendanceService.sendMail(
+                    collegeId = SendMailBody(
+                        collegeId = collegeId.toLong()
+                    )
+                )
+                if (response.code() == 200) {
+                    "Email Sent Successfully"
+                } else {
+                    "Failed to Send Mail"
+                }
+            } catch (e: Exception) {
+                "Failed to Send Mail"
             }
         }
     }
