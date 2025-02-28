@@ -103,24 +103,6 @@ fun MyApp() {
                     RegisteredStudentsScreen()
                 }
             }
-
-            // Show loading indicator when navigating between screens
-            AnimatedVisibility(
-                visible = isLoading,
-                enter = fadeIn(),
-                exit = fadeOut()
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator(
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-            }
         }
     }
 }

@@ -61,7 +61,7 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
         }
     }
 
-    LaunchedEffect(isRefreshing) {
+    LaunchedEffect(Unit) {
         if (isRefreshing) {
             Toast.makeText(context, "Refreshing Data", Toast.LENGTH_SHORT).show()
             attendanceViewModel.fetchStudentsList()
@@ -381,8 +381,18 @@ fun UserInfoCard(user: User) {
                     ),
                     border = ChipDefaults.chipBorder()
                 ) {
-                    Text(text = "${user.department} - ${user.year}", style = MaterialTheme.typography.labelMedium, color = MaterialTheme.colorScheme.onTertiaryContainer)
+                    Box(
+                        modifier = Modifier.fillMaxSize(),  // Ensures the Box takes the full Chip size
+                        contentAlignment = Alignment.Center // Centers the text inside the Chip
+                    ) {
+                        Text(
+                            text = "${user.department} - ${user.year}",
+                            style = MaterialTheme.typography.labelMedium,
+                            color = MaterialTheme.colorScheme.onTertiaryContainer
+                        )
+                    }
                 }
+
             }
         }
     }
