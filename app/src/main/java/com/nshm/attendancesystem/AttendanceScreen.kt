@@ -56,7 +56,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
+fun AttendanceScreen(attendanceViewModel: AttendanceViewModel) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val userList by attendanceViewModel::registeredStudentsList
@@ -296,7 +296,7 @@ fun AttendanceScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
                 } else {
                     items(filteredUsers) { user ->
                         if (user.isSeminarAttendee) {
-                            UserInfoCard(user)
+                            UserInfoCard(user, onCardClick = {})
                         }
                     }
                 }

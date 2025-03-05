@@ -23,6 +23,17 @@ interface ApiService {
         @Path("id") id: String
     ): Response<ScanResponse>
 
+    @GET("users/{id}")
+    suspend fun getUser(
+        @Path("id") id: String
+    ): User
+
+    @POST("users/update/{id}")
+    suspend fun updateUserInfo(
+        @Path("id") id: String,
+        @Body userInfo:User
+    ): Response<ResponseBody>
+
     @GET("users")
     suspend fun getRegisteredStudents(): List<User>
 

@@ -66,7 +66,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun RegisterScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
+fun RegisterScreen(attendanceViewModel: AttendanceViewModel) {
     // Context and keyboard controller for UI interactions
     val context = LocalContext.current
     val keyboardController = LocalSoftwareKeyboardController.current

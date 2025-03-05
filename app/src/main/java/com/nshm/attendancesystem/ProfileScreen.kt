@@ -35,8 +35,9 @@ import kotlinx.coroutines.launch
 fun ProfileScreen(
     userId: String,
     navController: NavController,
-    attendanceViewModel: AttendanceViewModel = viewModel()
+    attendanceViewModel: AttendanceViewModel
 ) {
+
     val user = remember(userId) {
         attendanceViewModel.registeredStudentsList.find { it._id == userId }
     }

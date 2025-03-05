@@ -40,18 +40,22 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             AttendanceSystemTheme {
-                MyApp()
+                val attendanceViewModel: AttendanceViewModel = viewModel()
+                MyApp(attendanceViewModel)
             }
         }
     }
@@ -59,7 +63,7 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MyApp() {
+fun MyApp(attendanceViewModel: AttendanceViewModel) {
     val navController = rememberNavController()
     val currentDestination = navController.currentBackStackEntryAsState()
     val currentScreenTitle = remember { mutableStateOf("Scan") }
@@ -68,7 +72,7 @@ fun MyApp() {
     // Update the title whenever navigation changes
     LaunchedEffect(currentDestination.value?.destination?.route) {
         currentDestination.value?.destination?.route?.let { route ->
-            currentScreenTitle.value = route
+            currentScreenTitle.value = route.substringBefore("/")
             isLoading = true
             kotlinx.coroutines.delay(800)
             isLoading = false
@@ -106,16 +110,23 @@ fun MyApp() {
                 startDestination = NavigationDestination.Scan.name
             ) {
                 composable(NavigationDestination.Scan.name) {
-                    CameraScreen(navController = navController)
+                    CameraScreen(navController = navController, attendanceViewModel = attendanceViewModel)
                 }
                 composable(NavigationDestination.Register.name) {
-                    RegisterScreen()
+                    RegisterScreen(attendanceViewModel = attendanceViewModel)
                 }
                 composable(NavigationDestination.Attendance.name) {
-                    AttendanceScreen()
+                    AttendanceScreen(attendanceViewModel = attendanceViewModel)
                 }
                 composable(NavigationDestination.Registered.name) {
-                    RegisteredStudentsScreen()
+                    RegisteredStudentsScreen(navController = navController,attendanceViewModel = attendanceViewModel)
+                }
+                composable(
+                    route = "${NavigationDestination.Profile.name}/{userId}",
+                    arguments = listOf(navArgument("userId") { type = NavType.StringType })
+                ) { backStackEntry ->
+                    val userId = backStackEntry.arguments?.getString("userId") ?: ""
+                    ProfileScreen(userId = userId, navController = navController,attendanceViewModel = attendanceViewModel)
                 }
             }
         }

@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import retrofit2.HttpException
@@ -36,6 +37,10 @@ class AttendanceViewModel : ViewModel() {
 
     var mailMessage by mutableStateOf("")
 
+    init {
+        fetchStudentsList()
+    }
+
     fun fetchScan(id: String) {
         viewModelScope.launch {
             try {
@@ -45,6 +50,17 @@ class AttendanceViewModel : ViewModel() {
             }
         }
     }
+
+    fun updateUserInfo(id: String,user: User) {
+        viewModelScope.launch {
+            try {
+                val response = _attendanceService.updateUserInfo(id = id, userInfo = user)
+            } catch (_: Exception) {
+            }
+        }
+    }
+
+
 
     private fun formatData(attendanceData: Response<ScanResponse>) {
         _name.value = attendanceData.body()?.user?.name ?: "User Not Found"

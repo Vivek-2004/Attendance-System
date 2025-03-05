@@ -7,8 +7,8 @@ data class ScanResponse(
 )
 
 data class User(
-    val _id: String,
-    val name: String,
+    val _id: String ,
+    val name: String ,
     val collegeEmail: String,
     val collegeId: Long,
     val year: String,
