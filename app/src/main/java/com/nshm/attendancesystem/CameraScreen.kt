@@ -67,20 +67,23 @@ import java.util.concurrent.Executors
 
 @Composable
 fun CameraScreen(
-    attendanceViewModel: AttendanceViewModel ,
+    attendanceViewModel: AttendanceViewModel,
     navController: NavController
 ) {
     val message by attendanceViewModel::messageScan
     val color by attendanceViewModel::color
     val nameState by attendanceViewModel.name.collectAsState()
-    var showAuthorizedScreen by remember { mutableStateOf(false) }
-    var name = nameState
     var isScanning by remember { mutableStateOf(true) }
     val col = MaterialTheme.colorScheme.primary
 
-    LaunchedEffect(name) {
-        if (name.isNotEmpty()) {
-            showAuthorizedScreen = true
+    LaunchedEffect(nameState) {
+        if (nameState.isNotEmpty()) {
+            // Navigate to AuthorizedScreen instead of showing it directly
+            navController.navigate(
+                "${NavigationDestination.Authorized.name}/${nameState}/${message}/${color}"
+            )
+            // Reset the name in the ViewModel
+            attendanceViewModel.resetName()
         }
     }
 
@@ -89,20 +92,11 @@ fun CameraScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        if (showAuthorizedScreen) {
-            AuthorizedScreen(
-                name = name,
-                message = message,
-                color = color,
-                navController = navController
-            )
-            name = ""
-        } else {
-            CameraPreview(
-                onScanComplete = {
-                    isScanning = false
-                }
-            )
+        CameraPreview(
+            onScanComplete = {
+                isScanning = false
+            }
+        )
 
             // QR scanning overlay
             Canvas(modifier = Modifier.fillMaxSize()) {
@@ -220,42 +214,43 @@ fun CameraScreen(
             }
 
             // Loading indicator when processing scan
-            AnimatedVisibility(
-                visible = !isScanning,
-                enter = fadeIn(),
-                exit = fadeOut()
+        AnimatedVisibility(
+            visible = !isScanning,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.Center
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            modifier = Modifier.padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                "Processing...",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            "Processing...",
+                            style = MaterialTheme.typography.titleMedium
+                        )
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun CameraPreview(
@@ -430,3 +425,4 @@ private fun processImageProxy(
         imageProxy.close()
     }
 }
+

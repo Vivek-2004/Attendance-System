@@ -1,5 +1,6 @@
 package com.nshm.attendancesystem
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,9 +18,9 @@ class AttendanceViewModel : ViewModel() {
 
     private val _attendanceService = attendanceService
 
-    private val _name = MutableStateFlow("")
 
-    val name: StateFlow<String> get() = _name
+    private val _name = MutableStateFlow("")
+    val name = _name.asStateFlow()
 
     var messageScan by mutableStateOf("")
         private set
@@ -41,12 +42,31 @@ class AttendanceViewModel : ViewModel() {
         fetchStudentsList()
     }
 
+
+    fun resetName() {
+        _name.value = ""
+    }
+
     fun fetchScan(id: String) {
         viewModelScope.launch {
             try {
                 val attendanceData = _attendanceService.getScanQr(id)
-                formatData(attendanceData)
-            } catch (_: Exception) {
+
+                // First check if response is successful
+                if (attendanceData.isSuccessful) {
+                    formatData(attendanceData)
+                } else {
+                    // Handle unsuccessful response
+                    messageScan = "Error"
+                    color = "red"
+                    _name.value = "Error: ${attendanceData.code()}"
+                }
+            } catch (e: Exception) {
+                // Log the exception and update UI appropriately
+                Log.e("AttendanceViewModel", "Error scanning QR: ${e.message}", e)
+                messageScan = "Error"
+                color = "red"
+                _name.value = "Error: ${e.message ?: "Unknown error"}"
             }
         }
     }
@@ -63,8 +83,14 @@ class AttendanceViewModel : ViewModel() {
 
 
     private fun formatData(attendanceData: Response<ScanResponse>) {
+        Log.d("AttendanceViewModel", "Response status: ${attendanceData.code()}")
+        Log.d("AttendanceViewModel", "Response body: ${attendanceData.body()}")
+
         _name.value = attendanceData.body()?.user?.name ?: "User Not Found"
         message = attendanceData.body()?.message ?: "User Not Found"
+
+        Log.d("AttendanceViewModel", "Name set to: ${_name.value}")
+        Log.d("AttendanceViewModel", "Message set to: $message")
         if (message == "User checked in successfully") {
             messageScan = "Authorized"
             color = "green"
