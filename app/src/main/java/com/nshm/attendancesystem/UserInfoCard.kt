@@ -1,6 +1,7 @@
 package com.nshm.attendancesystem
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -30,11 +31,12 @@ import androidx.wear.compose.material.ChipDefaults
 import java.util.Locale
 
 @Composable
-fun UserInfoCard(user: User) {
+fun UserInfoCard(user: User, onCardClick:()->Unit) {
     ElevatedCard(
         modifier = Modifier
             .padding(vertical = 6.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onCardClick() },
         elevation = CardDefaults.elevatedCardElevation(defaultElevation = 2.dp),
         colors = CardDefaults.elevatedCardColors(
             containerColor = MaterialTheme.colorScheme.surface

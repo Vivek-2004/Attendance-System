@@ -54,10 +54,12 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import kotlinx.coroutines.delay
 
 @Composable
-fun RegisteredStudentsScreen(attendanceViewModel: AttendanceViewModel = viewModel()) {
+fun RegisteredStudentsScreen(attendanceViewModel: AttendanceViewModel , navController: NavController) {
     val keyboardController = LocalSoftwareKeyboardController.current
 
     val userList by attendanceViewModel::registeredStudentsList
@@ -297,7 +299,9 @@ fun RegisteredStudentsScreen(attendanceViewModel: AttendanceViewModel = viewMode
                 } else {
                     items(filteredUsers) { user ->
                         if (user.isPresent) {
-                            UserInfoCard(user)
+                            UserInfoCard(user, onCardClick = {
+                                navController.navigate(NavigationDestination.Profile.name + "/${user._id}")
+                            })
                         }
                     }
                 }

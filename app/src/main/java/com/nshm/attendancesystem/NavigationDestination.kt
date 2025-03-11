@@ -4,5 +4,7 @@ enum class NavigationDestination {
     Scan,
     Register,
     Attendance,
-    Registered
+    Registered,
+    Profile,
+    Authorized
 }

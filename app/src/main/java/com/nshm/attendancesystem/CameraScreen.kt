@@ -67,7 +67,7 @@ import java.util.concurrent.Executors
 
 @Composable
 fun CameraScreen(
-    attendanceViewModel: AttendanceViewModel = viewModel(),
+    attendanceViewModel: AttendanceViewModel ,
     navController: NavController
 ) {
     val message by attendanceViewModel::messageScan
