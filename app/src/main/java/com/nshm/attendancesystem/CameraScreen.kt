@@ -2,6 +2,7 @@ package com.nshm.attendancesystem
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -76,14 +77,24 @@ fun CameraScreen(
     var isScanning by remember { mutableStateOf(true) }
     val col = MaterialTheme.colorScheme.primary
 
+    // Fix: This is where the navigation needs to be corrected
     LaunchedEffect(nameState) {
         if (nameState.isNotEmpty()) {
-            // Navigate to AuthorizedScreen instead of showing it directly
+            // Make sure we're getting valid data before navigation
+            val encodedName = java.net.URLEncoder.encode(nameState, "UTF-8")
+            val encodedMessage = java.net.URLEncoder.encode(message, "UTF-8")
+
+            // Log navigation attempt for debugging
+            Log.d("CameraScreen", "Navigating to Authorized with: name=$encodedName, message=$encodedMessage, color=$color")
+
+            // Navigate to AuthorizedScreen
             navController.navigate(
-                "${NavigationDestination.Authorized.name}/${nameState}/${message}/${color}"
+                route = "${NavigationDestination.Authorized.name}/$encodedName/$encodedMessage/$color"
             )
-            // Reset the name in the ViewModel
+
+            // Reset the name in the ViewModel after navigation
             attendanceViewModel.resetName()
+            isScanning = true  // Reset scanning state
         }
     }
 

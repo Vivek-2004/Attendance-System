@@ -1,6 +1,7 @@
 package com.nshm.attendancesystem
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -137,9 +138,14 @@ fun MyApp(attendanceViewModel: AttendanceViewModel) {
                         navArgument("color") { type = NavType.StringType }
                     )
                 ) { backStackEntry ->
+                    // Extract and decode arguments if needed
                     val name = backStackEntry.arguments?.getString("name") ?: ""
                     val message = backStackEntry.arguments?.getString("message") ?: ""
                     val color = backStackEntry.arguments?.getString("color") ?: ""
+
+                    // Debug log
+                    Log.d("Navigation", "Loading AuthorizedScreen with: name=$name, message=$message, color=$color")
+
                     AuthorizedScreen(
                         name = name,
                         message = message,

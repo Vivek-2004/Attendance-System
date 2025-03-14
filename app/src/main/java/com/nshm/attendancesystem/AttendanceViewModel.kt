@@ -47,16 +47,49 @@ class AttendanceViewModel : ViewModel() {
         _name.value = ""
     }
 
+    // In AttendanceViewModel.kt, update the formatData method
+
+    private fun formatData(attendanceData: Response<ScanResponse>) {
+        Log.d("AttendanceViewModel", "Response status: ${attendanceData.code()}")
+        Log.d("AttendanceViewModel", "Response body: ${attendanceData.body()}")
+
+        // Get user data or default to empty string (not "User Not Found")
+        _name.value = attendanceData.body()?.user?.name ?: ""
+        message = attendanceData.body()?.message ?: ""
+
+        // Log names and messages for debugging
+        Log.d("AttendanceViewModel", "Name set to: ${_name.value}")
+        Log.d("AttendanceViewModel", "Message set to: $message")
+
+        if (message == "User checked in successfully") {
+            messageScan = "Authorized"
+            color = "green"
+        } else if (message == "Duplicate entry") {
+            messageScan = "Duplicate Scan"
+            color = "yellow"
+        } else {
+            messageScan = "Unauthorized"  // Set a default message instead of empty
+            color = "red"
+        }
+
+        // Log the final values being set
+        Log.d("AttendanceViewModel", "Final messageScan: $messageScan, color: $color")
+    }
+
+    // Also, let's improve the fetchScan method for better error handling
     fun fetchScan(id: String) {
         viewModelScope.launch {
             try {
+                Log.d("AttendanceViewModel", "Starting scan for ID: $id")
                 val attendanceData = _attendanceService.getScanQr(id)
 
                 // First check if response is successful
                 if (attendanceData.isSuccessful) {
+                    Log.d("AttendanceViewModel", "Scan successful, formatting data")
                     formatData(attendanceData)
                 } else {
                     // Handle unsuccessful response
+                    Log.e("AttendanceViewModel", "Scan error: ${attendanceData.code()}")
                     messageScan = "Error"
                     color = "red"
                     _name.value = "Error: ${attendanceData.code()}"
@@ -80,28 +113,6 @@ class AttendanceViewModel : ViewModel() {
         }
     }
 
-
-
-    private fun formatData(attendanceData: Response<ScanResponse>) {
-        Log.d("AttendanceViewModel", "Response status: ${attendanceData.code()}")
-        Log.d("AttendanceViewModel", "Response body: ${attendanceData.body()}")
-
-        _name.value = attendanceData.body()?.user?.name ?: "User Not Found"
-        message = attendanceData.body()?.message ?: "User Not Found"
-
-        Log.d("AttendanceViewModel", "Name set to: ${_name.value}")
-        Log.d("AttendanceViewModel", "Message set to: $message")
-        if (message == "User checked in successfully") {
-            messageScan = "Authorized"
-            color = "green"
-        } else if (message == "Duplicate entry") {
-            messageScan = "Duplicate Scan"
-            color = "yellow"
-        } else {
-            messageScan = ""
-            color = "red"
-        }
-    }
 
     fun fetchStudentsList() {
         viewModelScope.launch {
