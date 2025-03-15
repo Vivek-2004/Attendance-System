@@ -1,6 +1,7 @@
 package com.nshm.attendancesystem
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -119,14 +120,38 @@ fun MyApp(attendanceViewModel: AttendanceViewModel) {
                     AttendanceScreen(attendanceViewModel = attendanceViewModel)
                 }
                 composable(NavigationDestination.Registered.name) {
-                    RegisteredStudentsScreen(navController = navController,attendanceViewModel = attendanceViewModel)
+                    RegisteredStudentsScreen(navController = navController, attendanceViewModel = attendanceViewModel)
                 }
                 composable(
                     route = "${NavigationDestination.Profile.name}/{userId}",
                     arguments = listOf(navArgument("userId") { type = NavType.StringType })
                 ) { backStackEntry ->
                     val userId = backStackEntry.arguments?.getString("userId") ?: ""
-                    ProfileScreen(userId = userId, navController = navController,attendanceViewModel = attendanceViewModel)
+                    ProfileScreen(userId = userId, navController = navController, attendanceViewModel = attendanceViewModel)
+                }
+                // Add this new composable for the AuthorizedScreen
+                composable(
+                    route = "${NavigationDestination.Authorized.name}/{name}/{message}/{color}",
+                    arguments = listOf(
+                        navArgument("name") { type = NavType.StringType },
+                        navArgument("message") { type = NavType.StringType },
+                        navArgument("color") { type = NavType.StringType }
+                    )
+                ) { backStackEntry ->
+                    // Extract and decode arguments if needed
+                    val name = backStackEntry.arguments?.getString("name") ?: ""
+                    val message = backStackEntry.arguments?.getString("message") ?: ""
+                    val color = backStackEntry.arguments?.getString("color") ?: ""
+
+                    // Debug log
+                    Log.d("Navigation", "Loading AuthorizedScreen with: name=$name, message=$message, color=$color")
+
+                    AuthorizedScreen(
+                        name = name,
+                        message = message,
+                        color = color,
+                        navController = navController
+                    )
                 }
             }
         }

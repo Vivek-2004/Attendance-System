@@ -1,5 +1,6 @@
 package com.nshm.attendancesystem
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,9 +18,9 @@ class AttendanceViewModel : ViewModel() {
 
     private val _attendanceService = attendanceService
 
-    private val _name = MutableStateFlow("")
 
-    val name: StateFlow<String> get() = _name
+    private val _name = MutableStateFlow("")
+    val name = _name.asStateFlow()
 
     var messageScan by mutableStateOf("")
         private set
@@ -41,12 +42,69 @@ class AttendanceViewModel : ViewModel() {
         fetchStudentsList()
     }
 
+
+    fun resetName() {
+        _name.value = ""
+    }
+
+    // In AttendanceViewModel.kt, update the formatData method
+
+    // In AttendanceViewModel.kt, update the formatData method
+
+    private fun formatData(attendanceData: Response<ScanResponse>) {
+        Log.d("AttendanceViewModel", "Response status: ${attendanceData.code()}")
+        Log.d("AttendanceViewModel", "Response body: ${attendanceData.body()}")
+
+        // Reset values first
+        message = ""
+        messageScan = ""
+        color = ""
+
+        // Get user data or default to empty string
+        val responseBody = attendanceData.body()
+        // Ensure _name is set even for errors
+        _name.value = responseBody?.user?.name ?: "Unknown"
+        message = responseBody?.message ?: ""
+
+        // Log names and messages for debugging
+        Log.d("AttendanceViewModel", "Name set to: ${_name.value}")
+        Log.d("AttendanceViewModel", "Message set to: $message")
+
+        if (message == "User checked in successfully") {
+            messageScan = "Authorized"
+            color = "green"
+        } else if (message == "Duplicate entry") {
+            messageScan = "Duplicate Scan"
+            color = "yellow"
+        } else {
+            messageScan = "Unauthorized"  // Set a default message instead of empty
+            color = "red"
+        }
+
+        // Log the final values being set
+        Log.d("AttendanceViewModel", "Final messageScan: $messageScan, color: $color")
+    }
+
+    // Also, let's improve the fetchScan method for better error handling
+    // Updated fetchScan()
     fun fetchScan(id: String) {
         viewModelScope.launch {
             try {
                 val attendanceData = _attendanceService.getScanQr(id)
-                formatData(attendanceData)
-            } catch (_: Exception) {
+                if (attendanceData.isSuccessful) {
+                    formatData(attendanceData)
+                } else {
+                    // Force non-empty name to trigger navigation
+                    _name.value = "Error"
+                    messageScan = "Error"
+                    color = "red"
+                    Log.e("ViewModel", "API Error: ${attendanceData.code()}")
+                }
+            } catch (e: Exception) {
+                _name.value = "Error"  // Force navigation trigger
+                messageScan = "Error"
+                color = "red"
+                Log.e("ViewModel", "Network Error: ${e.message}")
             }
         }
     }
@@ -60,22 +118,6 @@ class AttendanceViewModel : ViewModel() {
         }
     }
 
-
-
-    private fun formatData(attendanceData: Response<ScanResponse>) {
-        _name.value = attendanceData.body()?.user?.name ?: "User Not Found"
-        message = attendanceData.body()?.message ?: "User Not Found"
-        if (message == "User checked in successfully") {
-            messageScan = "Authorized"
-            color = "green"
-        } else if (message == "Duplicate entry") {
-            messageScan = "Duplicate Scan"
-            color = "yellow"
-        } else {
-            messageScan = ""
-            color = "red"
-        }
-    }
 
     fun fetchStudentsList() {
         viewModelScope.launch {

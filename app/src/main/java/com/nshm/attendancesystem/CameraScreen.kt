@@ -2,6 +2,7 @@ package com.nshm.attendancesystem
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -59,28 +60,54 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.google.mlkit.vision.barcode.BarcodeScanner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.barcode.common.Barcode
 import com.google.mlkit.vision.common.InputImage
+import java.net.URLEncoder
 import java.util.concurrent.Executors
 
 @Composable
 fun CameraScreen(
-    attendanceViewModel: AttendanceViewModel ,
+    attendanceViewModel: AttendanceViewModel,
     navController: NavController
 ) {
     val message by attendanceViewModel::messageScan
     val color by attendanceViewModel::color
     val nameState by attendanceViewModel.name.collectAsState()
-    var showAuthorizedScreen by remember { mutableStateOf(false) }
-    var name = nameState
     var isScanning by remember { mutableStateOf(true) }
     val col = MaterialTheme.colorScheme.primary
 
-    LaunchedEffect(name) {
-        if (name.isNotEmpty()) {
-            showAuthorizedScreen = true
+    // Track if we've already navigated for the current scan result
+    var hasNavigated by remember { mutableStateOf(false) }
+
+    LaunchedEffect(nameState, message) {
+        if (nameState.isNotEmpty() && !hasNavigated) {
+            Log.d("CameraScreen", "Navigating to Authorized...")
+            hasNavigated = true
+            isScanning = false
+
+            navController.navigate(
+                route = "${NavigationDestination.Authorized.name}/" +
+                        "${URLEncoder.encode(nameState, "UTF-8")}/" +
+                        "${URLEncoder.encode(message, "UTF-8")}/$color"
+            ) {
+                popUpTo(NavigationDestination.Scan.name) { inclusive = false }
+            }
+
+            attendanceViewModel.resetName() // Reset without delay
+        }
+    }
+    // In CameraScreen
+    val currentDestination = navController.currentBackStackEntryAsState().value?.destination
+
+    LaunchedEffect(currentDestination) {
+        if (currentDestination?.route == NavigationDestination.Scan.name) {
+            hasNavigated = false
+            isScanning = true  // Reset scanning state
+            attendanceViewModel.resetName()
+            Log.d("CameraScreen", "Reset: isScanning=$isScanning, hasNavigated=$hasNavigated")
         }
     }
 
@@ -89,173 +116,165 @@ fun CameraScreen(
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
     ) {
-        if (showAuthorizedScreen) {
-            AuthorizedScreen(
-                name = name,
-                message = message,
-                color = color,
-                navController = navController
-            )
-            name = ""
-        } else {
-            CameraPreview(
-                onScanComplete = {
-                    isScanning = false
-                }
-            )
-
-            // QR scanning overlay
-            Canvas(modifier = Modifier.fillMaxSize()) {
-                val rectWidth = 280.dp.toPx()
-                val squareSide = 280.dp.toPx()
-                val left = (size.width - rectWidth) / 2
-                val top = (size.height - squareSide) / 2
-
-                drawRect(
-                    color = Color.Black.copy(alpha = 0.6f),
-                    size = size
-                )
-
-                drawRect(
-                    color = Color.Transparent,
-                    topLeft = Offset(left, top),
-                    size = androidx.compose.ui.geometry.Size(rectWidth, squareSide),
-                    blendMode = BlendMode.Clear
-                )
-
-                val cornerSize = 30.dp.toPx()
-                val strokeWidth = 5.dp.toPx()
-
-
-                // Top-left corner
-                drawLine(
-                    color = col,
-                    start = Offset(left, top),
-                    end = Offset(left + cornerSize, top),
-                    strokeWidth = strokeWidth
-                )
-                drawLine(
-                    color = col,
-                    start = Offset(left, top),
-                    end = Offset(left, top + cornerSize),
-                    strokeWidth = strokeWidth
-                )
-
-                // Top-right corner
-                drawLine(
-                    color = col,
-                    start = Offset(left + rectWidth - cornerSize, top),
-                    end = Offset(left + rectWidth, top),
-                    strokeWidth = strokeWidth
-                )
-                drawLine(
-                    color = col,
-                    start = Offset(left + rectWidth, top),
-                    end = Offset(left + rectWidth, top + cornerSize),
-                    strokeWidth = strokeWidth
-                )
-
-                // Bottom-left corner
-                drawLine(
-                    color = col,
-                    start = Offset(left, top + squareSide),
-                    end = Offset(left + cornerSize, top + squareSide),
-                    strokeWidth = strokeWidth
-                )
-                drawLine(
-                    color = col,
-                    start = Offset(left, top + squareSide - cornerSize),
-                    end = Offset(left, top + squareSide),
-                    strokeWidth = strokeWidth
-                )
-
-                // Bottom-right corner
-                this.drawLine(
-                    color = col,
-                    start = Offset(left + rectWidth - cornerSize, top + squareSide),
-                    end = Offset(left + rectWidth, top + squareSide),
-                    strokeWidth = strokeWidth
-                )
-                drawLine(
-                    color = col,
-                    start = Offset(left + rectWidth, top + squareSide - cornerSize),
-                    end = Offset(left + rectWidth, top + squareSide),
-                    strokeWidth = strokeWidth
-                )
+        CameraPreview(
+            onScanComplete = {
+                isScanning = false
             }
+        )
 
-            // Instructions card
-            Card(
+        // Rest of your existing UI code remains the same
+        // QR scanning overlay
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val rectWidth = 280.dp.toPx()
+            val squareSide = 280.dp.toPx()
+            val left = (size.width - rectWidth) / 2
+            val top = (size.height - squareSide) / 2
+
+            drawRect(
+                color = Color.Black.copy(alpha = 0.6f),
+                size = size
+            )
+
+            drawRect(
+                color = Color.Transparent,
+                topLeft = Offset(left, top),
+                size = androidx.compose.ui.geometry.Size(rectWidth, squareSide),
+                blendMode = BlendMode.Clear
+            )
+
+            val cornerSize = 30.dp.toPx()
+            val strokeWidth = 5.dp.toPx()
+
+            // Top-left corner
+            drawLine(
+                color = col,
+                start = Offset(left, top),
+                end = Offset(left + cornerSize, top),
+                strokeWidth = strokeWidth
+            )
+            drawLine(
+                color = col,
+                start = Offset(left, top),
+                end = Offset(left, top + cornerSize),
+                strokeWidth = strokeWidth
+            )
+
+            // Top-right corner
+            drawLine(
+                color = col,
+                start = Offset(left + rectWidth - cornerSize, top),
+                end = Offset(left + rectWidth, top),
+                strokeWidth = strokeWidth
+            )
+            drawLine(
+                color = col,
+                start = Offset(left + rectWidth, top),
+                end = Offset(left + rectWidth, top + cornerSize),
+                strokeWidth = strokeWidth
+            )
+
+            // Bottom-left corner
+            drawLine(
+                color = col,
+                start = Offset(left, top + squareSide),
+                end = Offset(left + cornerSize, top + squareSide),
+                strokeWidth = strokeWidth
+            )
+            drawLine(
+                color = col,
+                start = Offset(left, top + squareSide - cornerSize),
+                end = Offset(left, top + squareSide),
+                strokeWidth = strokeWidth
+            )
+
+            // Bottom-right corner
+            this.drawLine(
+                color = col,
+                start = Offset(left + rectWidth - cornerSize, top + squareSide),
+                end = Offset(left + rectWidth, top + squareSide),
+                strokeWidth = strokeWidth
+            )
+            drawLine(
+                color = col,
+                start = Offset(left + rectWidth, top + squareSide - cornerSize),
+                end = Offset(left + rectWidth, top + squareSide),
+                strokeWidth = strokeWidth
+            )
+        }
+
+        // Instructions card
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .align(Alignment.BottomCenter),
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface
+            ),
+            elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .align(Alignment.BottomCenter),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
-                ),
-                elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+                    .padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        "Position the QR code inside the frame",
-                        style = MaterialTheme.typography.titleMedium.copy(
-                            fontWeight = FontWeight.Medium
-                        ),
-                        color = MaterialTheme.colorScheme.onSurface,
-                        textAlign = TextAlign.Center
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        "The scan will happen automatically",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                Text(
+                    "Position the QR code inside the frame",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        fontWeight = FontWeight.Medium
+                    ),
+                    color = MaterialTheme.colorScheme.onSurface,
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    "The scan will happen automatically",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center
+                )
             }
+        }
 
-            // Loading indicator when processing scan
-            AnimatedVisibility(
-                visible = !isScanning,
-                enter = fadeIn(),
-                exit = fadeOut()
+        // Loading indicator when processing scan
+        AnimatedVisibility(
+            visible = !isScanning,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.3f)),
+                contentAlignment = Alignment.Center
             ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f)),
-                    contentAlignment = Alignment.Center
+                Card(
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.surface
+                    ),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
                 ) {
-                    Card(
-                        colors = CardDefaults.cardColors(
-                            containerColor = MaterialTheme.colorScheme.surface
-                        ),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+                    Column(
+                        modifier = Modifier.padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        Column(
-                            modifier = Modifier.padding(24.dp),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            CircularProgressIndicator(
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(
-                                "Processing...",
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
+                        CircularProgressIndicator(
+                            color = MaterialTheme.colorScheme.primary
+                        )
+
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(
+                            "Processing...",
+                            style = MaterialTheme.typography.titleMedium
+                        )
                     }
                 }
             }
         }
     }
 }
+
 
 @Composable
 fun CameraPreview(
@@ -275,6 +294,12 @@ fun CameraPreview(
                 Manifest.permission.CAMERA
             ) == PackageManager.PERMISSION_GRANTED
         )
+    }
+
+    val restartScanner by remember { mutableStateOf(0) }
+
+    LaunchedEffect(restartScanner) {
+        // This will re-initialize the camera when restartScanner changes
     }
 
     val permissionLauncher = rememberLauncherForActivityResult(
@@ -430,3 +455,4 @@ private fun processImageProxy(
         imageProxy.close()
     }
 }
+

@@ -202,7 +202,7 @@ fun AuthorizedScreen(
 
                         FilledTonalButton(
                             onClick = {
-                                navController.navigate("Scan")
+                                navController.popBackStack()
                             },
                             shape = RoundedCornerShape(12.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(
