@@ -49,13 +49,22 @@ class AttendanceViewModel : ViewModel() {
 
     // In AttendanceViewModel.kt, update the formatData method
 
+    // In AttendanceViewModel.kt, update the formatData method
+
     private fun formatData(attendanceData: Response<ScanResponse>) {
         Log.d("AttendanceViewModel", "Response status: ${attendanceData.code()}")
         Log.d("AttendanceViewModel", "Response body: ${attendanceData.body()}")
 
-        // Get user data or default to empty string (not "User Not Found")
-        _name.value = attendanceData.body()?.user?.name ?: ""
-        message = attendanceData.body()?.message ?: ""
+        // Reset values first
+        message = ""
+        messageScan = ""
+        color = ""
+
+        // Get user data or default to empty string
+        val responseBody = attendanceData.body()
+        // Ensure _name is set even for errors
+        _name.value = responseBody?.user?.name ?: "Unknown"
+        message = responseBody?.message ?: ""
 
         // Log names and messages for debugging
         Log.d("AttendanceViewModel", "Name set to: ${_name.value}")
@@ -77,29 +86,25 @@ class AttendanceViewModel : ViewModel() {
     }
 
     // Also, let's improve the fetchScan method for better error handling
+    // Updated fetchScan()
     fun fetchScan(id: String) {
         viewModelScope.launch {
             try {
-                Log.d("AttendanceViewModel", "Starting scan for ID: $id")
                 val attendanceData = _attendanceService.getScanQr(id)
-
-                // First check if response is successful
                 if (attendanceData.isSuccessful) {
-                    Log.d("AttendanceViewModel", "Scan successful, formatting data")
                     formatData(attendanceData)
                 } else {
-                    // Handle unsuccessful response
-                    Log.e("AttendanceViewModel", "Scan error: ${attendanceData.code()}")
+                    // Force non-empty name to trigger navigation
+                    _name.value = "Error"
                     messageScan = "Error"
                     color = "red"
-                    _name.value = "Error: ${attendanceData.code()}"
+                    Log.e("ViewModel", "API Error: ${attendanceData.code()}")
                 }
             } catch (e: Exception) {
-                // Log the exception and update UI appropriately
-                Log.e("AttendanceViewModel", "Error scanning QR: ${e.message}", e)
+                _name.value = "Error"  // Force navigation trigger
                 messageScan = "Error"
                 color = "red"
-                _name.value = "Error: ${e.message ?: "Unknown error"}"
+                Log.e("ViewModel", "Network Error: ${e.message}")
             }
         }
     }
