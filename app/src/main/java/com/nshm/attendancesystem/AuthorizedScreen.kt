@@ -44,7 +44,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import java.util.Locale
 
 @Composable
 fun AuthorizedScreen(
@@ -181,8 +180,8 @@ fun AuthorizedScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
                                 Text(
-                                    text = name.uppercase(Locale.ROOT),
-                                    fontSize = 28.sp,
+                                    text = name,
+                                    fontSize = 25.sp,
                                     fontWeight = FontWeight.Bold,
                                     color = colorResource(txtColor)
                                 )

@@ -1,5 +1,13 @@
 package com.nshm.attendancesystem
 
+import androidx.compose.ui.graphics.vector.ImageVector
+
+data class NavigationItem(
+    val route: String,
+    val icon: ImageVector,
+    val label: String
+)
+
 data class ScanResponse(
     val message: String,
     val user: User? = null,
@@ -7,8 +15,8 @@ data class ScanResponse(
 )
 
 data class User(
-    val _id: String ,
-    val name: String ,
+    val _id: String,
+    val name: String,
     val collegeEmail: String,
     val collegeId: Long,
     val year: String,
